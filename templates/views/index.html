@@ -1,0 +1,523 @@
+{{ template "default" . }}
+{{ define "special" }}
+	{{/* Dashboard Core */}}
+	<link href="/assets/css/dashboard.css" rel="stylesheet" />
+	<script src="/assets/js/dashboard.js"></script>
+	{{/* c3.js Charts Plugin */}}
+	<link href="/assets/plugins/charts-c3/plugin.css" rel="stylesheet" />
+	<script src="/assets/plugins/charts-c3/plugin.js"></script>
+	{{/* Google Maps Plugin */}}
+	<link href="/assets/plugins/maps-google/plugin.css" rel="stylesheet" />
+	<script src="/assets/plugins/maps-google/plugin.js"></script>
+	{{/* Input Mask Plugin */}}
+	<script src="/assets/plugins/input-mask/plugin.js"></script>
+{{ end }}
+{{ define "page-title" }}{{ end }}
+{{ define "content" }}
+					<div class="row row-cards">
+						{{ range .data.Statistics }}
+						{{ if eq .Group "overall" }}
+						{{ if ne .Key "total-comments" }}
+						<div class="col-sm-6 col-lg-3">
+							<div class="card">
+								<div class="card-body p-4">
+									<div class="row">
+										<div class="col-auto">
+											{{ if eq .Key "total-tickets" }}
+											<span class="stamp stamp-md bg-blue mr-3">
+												<i class="fe fe-hash"></i>
+											</span>
+											{{ end }}
+											{{ if eq .Key "total-queries" }}
+											<span class="stamp stamp-md bg-green mr-3">
+												<i class="fe fe-box"></i>
+											</span>
+											{{ end }}
+											{{ if eq .Key "total-users" }}
+											<span class="stamp stamp-md bg-red mr-3">
+												<i class="fe fe-users"></i>
+											</span>
+											{{ end }}
+											{{ if eq .Key "total-clusters" }}
+											<span class="stamp stamp-md bg-yellow mr-3">
+												<i class="fe fe-server"></i>
+											</span>
+											{{ end }}
+										</div>
+										<div class="col text-right">
+											<div class="small">
+												{{ if eq .Key "total-tickets" }}
+												<h4 class="m-0"><a href="/tickets-list.html"><small>变更工单</small></a></h4>
+												{{ end }}
+												{{ if eq .Key "total-queries" }}
+												<h4 class="m-0"><a href="/queries-list.html"><small>数据查询</small></a></h4>
+												{{ end }}
+												{{ if eq .Key "total-users" }}
+												<h4 class="m-0"><a href="/users-list.html"><small>注册用户</small></a></h4>
+												{{ end }}
+												{{ if eq .Key "total-clusters" }}
+												<h4 class="m-0"><a href="/clusters-list.html"><small>实例群集</small></a></h4>
+												{{ end }}
+											</div>
+											<div class="h4 m-0">
+												<small class="text-muted">{{ .Value }}</small>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						{{ end }}
+						{{ end }}
+						{{ end }}
+						<div class="col-lg-9">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="card">
+										<div class="card-header">
+											<h3 class="card-title">趋势统计</h3>
+										</div>
+										<div class="card-body">
+											<div id="chart-development-activity" style="height:320px;"></div>
+										</div>
+									</div>
+									<script>
+										require(['c3', 'jquery'], function (c3, $) {
+											$(document).ready(function () {
+												var chart = c3.generate({
+													bindto: '#chart-development-activity', // id of chart wrapper
+													data: {
+														columns: [
+															// each columns data
+															['data1', 0, 5, 1, 2, 7, 5, 6, 8, 24, 7, 12, 5, 6, 3, 2, 2, 6, 30, 10, 10, 15, 14, 47, 65, 55]
+														],
+														type: 'area', // default type of chart
+														groups: [
+															['data1', 'data2', 'data3']
+														],
+														colors: {
+															'data1': tabler.colors["blue"]
+														},
+														names: {
+															// name of each serie
+															'data1': 'Purchases'
+														}
+													},
+													axis: {
+														y: {
+															padding: {
+																bottom: 0,
+															},
+															show: false,
+															tick: {
+																outer: false
+															}
+														},
+														x: {
+															padding: {
+																left: 0,
+																right: 0
+															},
+															show: false
+														}
+													},
+													legend: {
+														position: 'inset',
+														padding: 0,
+														inset: {
+															anchor: 'top-left',
+															x: 20,
+															y: 8,
+															step: 10
+														}
+													},
+													tooltip: {
+														format: {
+															title: function (x) {
+																return '';
+															}
+														}
+													},
+													padding: {
+														bottom: 0,
+														left: -1,
+														right: -1
+													},
+													point: {
+														show: false
+													}
+												});
+											});
+										});
+									</script>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="card">
+										<div class="card-header">
+											<h3 class="card-title">占比分布</h3>
+										</div>
+										<div class="card-body">
+											<div id="chart-donut" style="height:320px;"></div>
+										</div>
+									</div>
+									<script>
+										require(['c3', 'jquery'], function (c3, $) {
+											$(document).ready(function () {
+												var chart = c3.generate({
+													bindto: '#chart-donut', // id of chart wrapper
+													data: {
+														columns: [
+															// each columns data
+															['data1', 63],
+															['data2', 37]
+														],
+														type: 'donut', // default type of chart
+														colors: {
+															'data1': tabler.colors["green"],
+															'data2': tabler.colors["green-light"]
+														},
+														names: {
+															// name of each serie
+															'data1': 'Maximum',
+															'data2': 'Minimum'
+														}
+													},
+													axis: {
+													},
+													legend: {
+														show: false, //hide legend
+													},
+													padding: {
+														bottom: 0,
+														top: 0
+													},
+												});
+											});
+										});
+									</script>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row row-cards row-deck">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h3 class="card-title">最新工单</h3>
+								</div>
+								<div class="table-responsive">
+									<table class="table table-hover table-outline table-vcenter text-nowrap card-table">
+										<thead>
+											<tr>
+												<th class="text-center w-1"><i class="icon-people"></i></th>
+												<th>发起人</th>
+												<th>工单主题</th>
+												<th class="text-center">状态</th>
+												<th>目标群集</th>
+												<th>目标库</th>
+												<th class="text-center w-1"><i class="icon-people"></i></th>
+												<th>审核人</th>
+												<th class="text-center"><i class="icon-settings"></i></th>
+											</tr>
+										</thead>
+										<tbody>
+											{{ range .data.Tickets.Edges }}
+											<tr>
+												<td class="text-center">
+													<div class="avatar d-block" style="background-image: url(assets/images/faces/female/26.jpg)">
+														<span class="avatar-status bg-red"></span>
+													</div>
+												</td>
+												<td>
+													<div class="small">{{ .Node.User.Name }}</div>
+													<div class="small">发起日期: {{ .Node.CreateAt }}</div>
+												</td>
+												<td>
+													<div class="small">{{ .Node.Subject }}</div>
+												</td>
+												<td class="text-center">
+													<span class="status-icon bg-warning"></span>
+												</td>
+												<td>
+													<div class="small">{{ .Node.Cluster.Alias }}</div>
+													<div class="small">{{ .Node.Cluster.Host }}({{ .Node.Cluster.IP }}):{{ .Node.Cluster.Port }}</div>
+												</td>
+												<td>
+													<div class="small">{{ .Node.Database }}</div>
+												</td>
+												<td class="text-center">
+													<div class="avatar d-block" style="background-image: url(assets/images/faces/male/20.jpg)">
+														<span class="avatar-status bg-green"></span>
+													</div>
+												</td>
+												<td>
+													<div class="small">{{ .Node.Reviewer.Name }}</div>
+													<div class="small">审核日期: {{ .Node.CreateAt }}</div>
+												</td>
+												<td class="text-center">
+													<div class="item-action dropdown">
+														<a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+														<div class="dropdown-menu dropdown-menu-right">
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Action </a>
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i> Another
+																action
+															</a>
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i>
+																Something
+																else here</a>
+															<div class="dropdown-divider"></div>
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated
+																link</a>
+														</div>
+													</div>
+												</td>
+											</tr>
+											{{ end }}
+											<tr>
+												<td class="text-center">
+													<div class="avatar d-block" style="background-image: url(assets/images/faces/male/20.jpg)">
+														<span class="avatar-status bg-green"></span>
+													</div>
+												</td>
+												<td>
+													<div class="small">Christopher Harvey</div>
+													<div class="small">发起日期: Jan 22, 2018</div>
+												</td>
+												<td>
+													<div class="small">规则测试 - 建表语句使用不存在的数据库 `mock`</div>
+												</td>
+												<td class="text-center">
+													<span class="status-icon bg-warning"></span>
+												</td>
+												<td>
+													<div class="small">群集别名</div>
+													<div class="small">主机名称(主机地址):端口</div>
+												</td>
+												<td>
+													<div class="small">群集别名</div>
+												</td>
+												<td class="text-center">
+													<div class="avatar d-block" style="background-image: url(assets/images/faces/male/20.jpg)">
+														<span class="avatar-status bg-green"></span>
+													</div>
+												</td>
+												<td>
+													<div class="small">Douglas Ray</div>
+													<div class="small">审核日期: Jan 15, 2018</div>
+												</td>
+												<td class="text-center">
+													<div class="item-action dropdown">
+														<a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+														<div class="dropdown-menu dropdown-menu-right">
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-tag"></i> Action </a>
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-edit-2"></i> Another action
+																</a>
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-message-square"></i> Something
+																else here</a>
+															<div class="dropdown-divider"></div>
+															<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fe fe-link"></i> Separated link</a>
+														</div>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-lg-3">
+							<div class="card">
+								<div class="card-header">
+									<h2 class="card-title">主机信息</h2>
+								</div>
+								<table class="table card-table">
+									<tr>
+										<td>主机名称</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.HostInfos.HostName }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>处理器数量</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.HostInfos.NCPUs }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>操作系统</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.HostInfos.OSName }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>版本</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.HostInfos.OSRelease }}</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="col-sm-6 col-lg-3">
+							<div class="card">
+								<div class="card-header">
+									<h4 class="card-title">进程统计</h4>
+								</div>
+								<table class="table card-table">
+									<tr>
+										<td>全部</td>
+										<td class="text-right"><span class="text-muted">{{ .data.Environments.ProcessStats.Total }}</span></td>
+									</tr>
+									<tr>
+										<td>正在运行</td>
+										<td class="text-right"><span class="text-muted">{{ .data.Environments.ProcessStats.Running }}</span></td>
+									</tr>
+									<tr>
+										<td>已停止</td>
+										<td class="text-right"><span class="text-muted">{{ .data.Environments.ProcessStats.Stopped }}</span></td>
+									</tr>
+									<tr>
+										<td>僵尸进程</td>
+										<td class="text-right"><span class="text-muted">{{ .data.Environments.ProcessStats.Zombie }}</span></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="col-sm-6 col-lg-3">
+							<div class="card">
+								<div class="card-header">
+									<h2 class="card-title">负载统计</h2>
+								</div>
+								<table class="table card-table">
+									<tr>
+										<td>用户</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.CPUStats.User }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>内核</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.CPUStats.Kernel }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>空闲</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.CPUStats.Idle }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>负载</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.CPUStats.LoadMin1 }} / {{ .data.Environments.CPUStats.LoadMin5 }} / {{ .data.Environments.CPUStats.LoadMin15 }}</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="col-sm-6 col-lg-3">
+							<div class="card">
+								<div class="card-header">
+									<h2 class="card-title">内存信息</h2>
+								</div>
+								<table class="table card-table">
+									<tr>
+										<td>全部</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.MemStats.Total }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>已用</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.MemStats.Used }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>空闲</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.MemStats.Free }}</span>
+										</td>
+									</tr>
+									<tr>
+										<td>缓冲</td>
+										<td class="text-right">
+											<span class="text-muted">{{ .data.Environments.MemStats.Cache }}</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h3 class="card-title">预约任务</h3>
+								</div>
+								<div class="table-responsive">
+									<table class="table card-table table-vcenter text-nowrap">
+										<thead>
+											<tr>
+												<th class="text-center w-1"><i class="icon-people"></i></th>
+												<th class="w-1">预约人</th>
+												<th>预约名称</th>
+												<th class="w-1">状态</th>
+												<th class="w-1">周期</th>
+												<th class="w-1">执行耗时</th>
+												<th class="w-1">上次执行</th>
+												<th class="w-1">下次执行</th>
+												<th class="w-1">循环</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{ range .data.Crons.Edges }}
+											<tr>
+												<td class="text-center">
+													<div class="avatar d-block" style="background-image: url(assets/images/faces/male/20.jpg)">
+														<span class="avatar-status bg-green"></span>
+													</div>
+												</td>
+												<td>
+													<div class="small">Douglas Ray</div>
+													<div class="small">预约日期: {{ .Node.CreateAt }}</div>
+												</td>
+												<td>
+													<span class="text-muted"></span>
+													<div class="small">{{ .Node.Name }}</div>
+													<div class="small">创建日期: {{ .Node.CreateAt }}</div>
+												</td>
+												<td>
+													<a href="invoice.html" class="text-inherit">{{ .Node.Status }}</a>
+												</td>
+												<td>{{ .Node.Interval }}</td>
+												<td>{{ .Node.Duration }}</td>
+												<td>{{ .Node.LastRun }}</td>
+												<td>
+													<span class="status-icon bg-success"></span> {{ .Node.NextRun }}
+												</td>
+												<td>{{ if eq .Node.Recurrent 1 }}是{{ else }}否{{ end }}</td>
+											</tr>
+											{{ end }}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<script>
+						requirejs(['jquery'], function ($) {
+							$(function () {
+								var ws = new WebSocket('ws://127.0.0.1:8000/ws');
+								ws.onmessage = function (e) {
+									$('<li>').text(event.data).appendTo($ul);
+								};
+								var $ul = $('#msg-list');
+							});
+						})
+					</script>
+					<ul id="msg-list"></ul>
+{{ end }}

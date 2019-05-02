@@ -1,0 +1,25 @@
+{{ define "default" }}
+<!doctype html>
+<html lang="en" dir="ltr">
+
+<head>
+	{{ template "head" . }}
+</head>
+
+<body class="">
+	<div class="page">
+		<div class="flex-fill">
+			{{ template "menu" . }}
+			<div class="my-3 my-md-5">
+				<div class="container">
+					{{ block "page-title" . }}{{ end }}
+					{{ block "content" . }}{{ end }}
+				</div>
+			</div>
+		</div>
+		{{ template "footer" . }}
+	</div>
+</body>
+
+</html>
+{{ end }}

@@ -1,0 +1,8 @@
+{
+	"log": {
+		"level": "debug"
+	},
+	"listen": "0.0.0.0:1234",
+	"key": "key.pem",
+	"cert": "cert.pem"
+}

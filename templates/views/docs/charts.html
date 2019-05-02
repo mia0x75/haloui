@@ -1,0 +1,2685 @@
+{{ template "default" . }}
+{{ define "special" }}
+	{{/* Dashboard Core */}}
+	<link href="/assets/css/dashboard.css" rel="stylesheet" />
+	<script src="/assets/js/dashboard.js"></script>
+	{{/* c3.js Charts Plugin */}}
+	<link href="/assets/plugins/charts-c3/plugin.css" rel="stylesheet" />
+	<script src="/assets/plugins/charts-c3/plugin.js"></script>
+	{{/* Google Maps Plugin */}}
+	<link href="/assets/plugins/maps-google/plugin.css" rel="stylesheet" />
+	<script src="/assets/plugins/maps-google/plugin.js"></script>
+	{{/* Input Mask Plugin */}}
+	<script src="/assets/plugins/input-mask/plugin.js"></script>
+{{ end }}
+{{ define "requirejs-config" }}
+<script>
+	requirejs.config({
+		baseUrl: '..'
+	});
+</script>
+{{ end }}
+{{ define "page-title" }}
+						<div class="page-header">
+							<h1 class="page-title">Documentation</h1>
+						</div>
+{{ end }}
+{{ define "content" }}
+						{{/* http://demo.interface.club/limitless/bs4/Template/layout_1/LTR/default/full/d3_lines_basic.html */}}
+						<div class="row">
+							<div class="col-lg-3 order-lg-1 mb-4">
+								<!-- Getting started -->
+								<div class="list-group list-group-transparent mb-0">
+									<a href="../docs/index.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-flag"></i></span>Introduction</a>
+								</div>
+								<!-- Components -->
+								<div class="list-group list-group-transparent mb-0">
+									<a href="../docs/alerts.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-alert-triangle"></i></span>Alerts</a>
+									<a href="../docs/avatars.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-user"></i></span>Avatars</a>
+									<a href="../docs/buttons.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-plus-square"></i></span>Buttons</a>
+									<a href="../docs/colors.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-feather"></i></span>Colors</a>
+									<a href="../docs/cards.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-image"></i></span>Cards</a>
+									<a href="../docs/charts.html" class="list-group-item list-group-item-action active"><span class="icon mr-3"><i class="fe fe-pie-chart"></i></span>Charts</a>
+									<a href="../docs/form-components.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-check-square"></i></span>Form components</a>
+									<a href="../docs/tags.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-tag"></i></span>Tags</a>
+									<a href="../docs/typography.html" class="list-group-item list-group-item-action"><span class="icon mr-3"><i class="fe fe-type"></i></span>Typography</a>
+								</div>
+							</div>
+							<div class="col-lg-9">
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<h2 class="mt-0 mb-4">Charts</h2>
+											<div class="card">
+												<div class="card-header">
+													<h3 class="card-title">Line chart</h3>
+												</div>
+												<div class="card-body">
+													<div id="linechart1" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['c3'], function (c3) {
+													var chart = c3.generate({
+														bindto: '#linechart1', // id of chart wrapper
+														data: {
+															columns: [
+																// each columns data
+																['data1', 7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+																['data2', 3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+															],
+															labels: true,
+															type: 'line', // default type of chart
+															colors: {
+																'data1': tabler.colors["blue"],
+																'data2': tabler.colors["green"]
+															},
+															names: {
+																// name of each serie
+																'data1': 'Tokyo',
+																'data2': 'London'
+															}
+														},
+														axis: {
+															x: {
+																type: 'category',
+																// name of each category
+																categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+															},
+														},
+														legend: {
+															show: false, //hide legend
+														},
+														padding: {
+															bottom: 0,
+															top: 0
+														},
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* https://stackoverflow.com/questions/44164912/d3-gauge-chart-with-labels-and-percentages */}}
+													<h3 class="card-title">Gauge chart with labels and percentages - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="chart-wrapper2" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3', 'c3'], function (d3, c3) {
+													var width = 712, height = 300;
+													var data = [
+														{ value: 45, label: "label_1", color: '#ff0000' },
+														{ value: 33, label: "label_2", color: '#00ff00' },
+														{ value: 66, label: "label_3", color: '#0000ff' },
+														{ value: 50, label: "label_4", color: '#ffff00' },
+														{ value: 90, label: "label_5", color: '#ff0099' }
+													];
+													var arcSize = (6 * height / 100);
+													var innerRadius = arcSize * 3;
+													var svg = d3.select('#chart-wrapper2').append('svg')
+														.attr('width', width)
+														.attr('height', height)
+													var arcs = data.map(function (obj, i) {
+														return d3.arc().innerRadius(i * arcSize + innerRadius).outerRadius((i + 1) * arcSize - (height / 100) + innerRadius);
+													});
+													var arcsGrey = data.map(function (obj, i) {
+														return d3.arc().innerRadius(i * arcSize + (innerRadius + ((arcSize / 2) - 2))).outerRadius((i + 1) * arcSize - ((arcSize / 2)) + (innerRadius));
+													});
+													var pieData = data.map(function (obj, i) {
+														return [
+															{ value: obj.value * 0.75, arc: arcs[i], object: obj },
+															{ value: (100 - obj.value) * 0.75, arc: arcsGrey[i], object: obj },
+															{ value: 100 * 0.25, arc: arcs[i], object: obj }];
+													});
+													var pie = d3.pie()
+														.sort(null)
+														.value(d => d.value)
+													var g = svg.selectAll('g')
+														.data(pieData)
+														.enter()
+														.append('g')
+														.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(180)')
+														.attr('fill-opacity', (d, i) => 2 / (i + 1))
+													var gText = svg.selectAll('g.textClass').data([{}]).enter()
+														.append('g')
+														.classed('textClass', true)
+														.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(180)');
+													g.selectAll('path').data(d => { return pie(d) }).enter().append('path').attr('d', d => { return d.data.arc(d) })
+														.attr('fill', (d, i) => i == 0 ? 'blue' : 'none')
+													svg.selectAll('g').each(function (d, index) {
+														var el = d3.select(this);
+														el.selectAll('path').each((r, i) => {
+															var obj = r.data.object;
+															if (i == 1) {
+																var centroid = r.data.arc.centroid({ startAngle: r.startAngle + 0.05, endAngle: r.startAngle + 0.001 + 0.05 })
+																g.append('text')
+																	.attr('font-size', ((5 * height) / 100))
+																	.attr('dominant-baseline', 'central')
+																	.attr('alignment-baseline', 'middle')
+																	.append("textPath")
+																	.attr("textLength", function (d, i) {
+																		return 0;
+																	})
+																	.attr("xlink:href", "#Text" + obj.label)
+																	.attr("startOffset", '5')
+																	.attr("dy", '-3em')
+																	.text(obj.value + '%');
+															}
+															if (i === 0) {
+																var centroidText = r.data.arc.centroid({
+																	startAngle: r.startAngle,
+																	endAngle: r.startAngle
+																});
+																gText.append('text')
+																	.attr('font-size', ((5 * height) / 100))
+																	.text(obj.label)
+																	.attr('transform', "translate(" + (centroidText[0] - ((1.5 * height) / 100)) + "," + (centroidText[1] + ") rotate(" + (180) + ")"))
+																	.attr('dominant-baseline', 'central');
+															}
+														})
+													})
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* https://stackoverflow.com/questions/44164912/d3-gauge-chart-with-labels-and-percentages */}}
+													<h3 class="card-title">Gauge chart with labels and percentages - 2</h3>
+												</div>
+												<div class="card-body">
+													<div id="chart-wrapper3" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3', 'c3'], function (d3, c3) {
+													var width = 712, height = 300;
+													var arcSize = (6 * height / 100);
+													var innerRadius = arcSize * 3;
+													var data = [
+														{ value: 45, label: "label_1", color: '#ff0000' },
+														{ value: 33, label: "label_2", color: '#00ff00' },
+														{ value: 66, label: "label_3", color: '#0000ff' },
+														{ value: 50, label: "label_4", color: '#ffff00' },
+														{ value: 90, label: "label_5", color: '#ff0099' }
+													];
+													function render() {
+														var svg = d3.select('#chart-wrapper3').append('svg').attr('width', width).attr('height', height);
+														var arcs = data.map(function (obj, i) {
+															return d3.arc().innerRadius(i * arcSize + innerRadius).outerRadius((i + 1) * arcSize - (height / 100) + innerRadius);
+														});
+														var arcsGrey = data.map(function (obj, i) {
+															return d3.arc().innerRadius(i * arcSize + (innerRadius + ((arcSize / 2) - 2))).outerRadius((i + 1) * arcSize - ((arcSize / 2)) + (innerRadius));
+														});
+														var pieData = data.map(function (obj, i) {
+															return [
+																{ value: obj.value * 0.75, arc: arcs[i], object: obj },
+																{ value: (100 - obj.value) * 0.75, arc: arcsGrey[i], object: obj },
+																{ value: 100 * 0.25, arc: arcs[i], object: obj }];
+														});
+														var pie = d3.pie().sort(null).value(function (d) {
+															return d.value;
+														});
+														var g = svg.selectAll('g').data(pieData).enter()
+															.append('g')
+															.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(180)');
+														var gText = svg.selectAll('g.textClass').data([{}]).enter()
+															.append('g')
+															.classed('textClass', true)
+															.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ') rotate(180)');
+														g.selectAll('path').data(function (d) {
+															return pie(d);
+														}).enter().append('path')
+															.attr('id', function (d, i) {
+																if (i == 1) {
+																	return "Text" + d.data.object.label
+																}
+															})
+															.attr('d', function (d) {
+																return d.data.arc(d);
+															}).attr('fill', function (d, i) {
+																return i == 0 ? d.data.object.color : i == 1 ? '#D3D3D3' : 'none';
+															});
+														svg.selectAll('g').each(function (d, index) {
+															var el = d3.select(this);
+															var path = el.selectAll('path').each(function (r, i) {
+																var obj = r.data.object;
+																if (i === 1) {
+																	var centroid = r.data.arc.centroid({
+																		startAngle: r.startAngle + 0.05,
+																		endAngle: r.startAngle + 0.001 + 0.05
+																	});
+																	g.append('text')
+																		.attr('font-size', ((5 * height) / 100))
+																		.attr('dominant-baseline', 'central')
+																		.append("textPath")
+																		.attr("textLength", function (d, i) {
+																			return 0;
+																		})
+																		.attr("xlink:href", "#Text" + obj.label)
+																		.attr("startOffset", '5')
+																		.attr("dy", '-3em')
+																		.text(obj.value + '%');
+																}
+																if (i === 0) {
+																	var centroidText = r.data.arc.centroid({
+																		startAngle: r.startAngle,
+																		endAngle: r.startAngle
+																	});
+																	gText.append('text')
+																		.attr('font-size', ((5 * height) / 100))
+																		.text(obj.label)
+																		.attr('transform', "translate(" + (centroidText[0] - ((1.5 * height) / 100)) + "," + (centroidText[1] + ") rotate(" + (180) + ")"))
+																		.attr('dominant-baseline', 'central');
+																}
+															});
+														});
+													}
+													render()
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6 */}}
+													<h3 class="card-title">Gauge - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="chart-wrapper4" style="height: auto">
+														<svg id="lfg1" width="97%" height="250"></svg>
+														<svg id="lfg2" width="19%" height="200"></svg>
+														<svg id="lfg3" width="19%" height="200"></svg>
+														<svg id="lfg4" width="19%" height="200"></svg>
+														<svg id="lfg5" width="19%" height="200"></svg>
+														<svg id="lfg6" width="19%" height="200"></svg>
+													</div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var gauge1 = loadLiquidFillGauge("lfg1", 55);
+													var config1 = liquidFillGaugeDefaultSettings();
+													config1.circleColor = "#FF7777";
+													config1.textColor = "#FF4444";
+													config1.waveTextColor = "#FFAAAA";
+													config1.waveColor = "#FFDDDD";
+													config1.circleThickness = 0.2;
+													config1.textVertPosition = 0.2;
+													config1.waveAnimateTime = 1000;
+													var gauge2 = loadLiquidFillGauge("lfg2", 28, config1);
+													var config2 = liquidFillGaugeDefaultSettings();
+													config2.circleColor = "#D4AB6A";
+													config2.textColor = "#553300";
+													config2.waveTextColor = "#805615";
+													config2.waveColor = "#AA7D39";
+													config2.circleThickness = 0.1;
+													config2.circleFillGap = 0.2;
+													config2.textVertPosition = 0.8;
+													config2.waveAnimateTime = 2000;
+													config2.waveHeight = 0.3;
+													config2.waveCount = 1;
+													var gauge3 = loadLiquidFillGauge("lfg3", 60.1, config2);
+													var config3 = liquidFillGaugeDefaultSettings();
+													config3.textVertPosition = 0.8;
+													config3.waveAnimateTime = 5000;
+													config3.waveHeight = 0.15;
+													config3.waveAnimate = false;
+													config3.waveOffset = 0.25;
+													config3.displayPercent = false;
+													var gauge4 = loadLiquidFillGauge("lfg4", 50, config3);
+													var config4 = liquidFillGaugeDefaultSettings();
+													config4.circleThickness = 0.15;
+													config4.circleColor = "#808015";
+													config4.textColor = "#555500";
+													config4.waveTextColor = "#FFFFAA";
+													config4.waveColor = "#AAAA39";
+													config4.textVertPosition = 0.8;
+													config4.waveAnimateTime = 1000;
+													config4.waveHeight = 0.05;
+													config4.waveAnimate = true;
+													config4.waveRise = false;
+													config4.waveHeightScaling = false;
+													config4.waveOffset = 0.25;
+													config4.textSize = 0.75;
+													config4.waveCount = 3;
+													var gauge5 = loadLiquidFillGauge("lfg5", 60.44, config4);
+													var config5 = liquidFillGaugeDefaultSettings();
+													config5.circleThickness = 0.4;
+													config5.circleColor = "#6DA398";
+													config5.textColor = "#0E5144";
+													config5.waveTextColor = "#6DA398";
+													config5.waveColor = "#246D5F";
+													config5.textVertPosition = 0.52;
+													config5.waveAnimateTime = 5000;
+													config5.waveHeight = 0;
+													config5.waveAnimate = false;
+													config5.waveCount = 2;
+													config5.waveOffset = 0.25;
+													config5.textSize = 1.2;
+													config5.minValue = 30;
+													config5.maxValue = 150
+													config5.displayPercent = false;
+													var gauge6 = loadLiquidFillGauge("lfg6", 120, config5);
+
+													function NewValue() {
+														if (Math.random() > .5) {
+															return Math.round(Math.random() * 100);
+														} else {
+															return (Math.random() * 100).toFixed(1);
+														}
+													}
+													function liquidFillGaugeDefaultSettings() {
+														return {
+															minValue: 0, // The gauge minimum value.
+															maxValue: 100, // The gauge maximum value.
+															circleThickness: 0.05, // The outer circle thickness as a percentage of it's radius.
+															circleFillGap: 0.05, // The size of the gap between the outer circle and wave circle as a percentage of the outer circles radius.
+															circleColor: "#178BCA", // The color of the outer circle.
+															waveHeight: 0.05, // The wave height as a percentage of the radius of the wave circle.
+															waveCount: 1, // The number of full waves per width of the wave circle.
+															waveRiseTime: 1000, // The amount of time in milliseconds for the wave to rise from 0 to it's final height.
+															waveAnimateTime: 18000, // The amount of time in milliseconds for a full wave to enter the wave circle.
+															waveRise: true, // Control if the wave should rise from 0 to it's full height, or start at it's full height.
+															waveHeightScaling: true, // Controls wave size scaling at low and high fill percentages. When true, wave height reaches it's maximum at 50% fill, and minimum at 0% and 100% fill. This helps to prevent the wave from making the wave circle from appear totally full or empty when near it's minimum or maximum fill.
+															waveAnimate: true, // Controls if the wave scrolls or is static.
+															waveColor: "#178BCA", // The color of the fill wave.
+															waveOffset: 0, // The amount to initially offset the wave. 0 = no offset. 1 = offset of one full wave.
+															textVertPosition: .5, // The height at which to display the percentage text withing the wave circle. 0 = bottom, 1 = top.
+															textSize: 1, // The relative height of the text to display in the wave circle. 1 = 50%
+															valueCountUp: true, // If true, the displayed value counts up from 0 to it's final value upon loading. If false, the final value is displayed.
+															displayPercent: true, // If true, a % symbol is displayed after the value.
+															textColor: "#045681", // The color of the value text when the wave does not overlap it.
+															waveTextColor: "#A4DBf8" // The color of the value text when the wave overlaps it.
+														};
+													}
+
+													function loadLiquidFillGauge(elementId, value, config) {
+														if (config == null) config = liquidFillGaugeDefaultSettings();
+
+														var gauge = d3.select("#" + elementId);
+														var radius = Math.min(parseInt(gauge.style("width")), parseInt(gauge.style("height"))) / 2;
+														var locationX = parseInt(gauge.style("width")) / 2 - radius;
+														var locationY = parseInt(gauge.style("height")) / 2 - radius;
+														var fillPercent = Math.max(config.minValue, Math.min(config.maxValue, value)) / config.maxValue;
+
+														var waveHeightScale;
+														if (config.waveHeightScaling) {
+															waveHeightScale = d3.scaleLinear()
+																.range([0, config.waveHeight, 0])
+																.domain([0, 50, 100]);
+														} else {
+															waveHeightScale = d3.scaleLinear()
+																.range([config.waveHeight, config.waveHeight])
+																.domain([0, 100]);
+														}
+
+														var textPixels = (config.textSize * radius / 2);
+														var textFinalValue = parseFloat(value).toFixed(2);
+														var textStartValue = config.valueCountUp ? config.minValue : textFinalValue;
+														var percentText = config.displayPercent ? "%" : "";
+														var circleThickness = config.circleThickness * radius;
+														var circleFillGap = config.circleFillGap * radius;
+														var fillCircleMargin = circleThickness + circleFillGap;
+														var fillCircleRadius = radius - fillCircleMargin;
+														var waveHeight = fillCircleRadius * waveHeightScale(fillPercent * 100);
+
+														var waveLength = fillCircleRadius * 2 / config.waveCount;
+														var waveClipCount = 1 + config.waveCount;
+														var waveClipWidth = waveLength * waveClipCount;
+
+														// Rounding functions so that the correct number of decimal places is always displayed as the value counts up.
+														var textRounder = function (value) { return Math.round(value); };
+														if (parseFloat(textFinalValue) != parseFloat(textRounder(textFinalValue))) {
+															textRounder = function (value) { return parseFloat(value).toFixed(1); };
+														}
+														if (parseFloat(textFinalValue) != parseFloat(textRounder(textFinalValue))) {
+															textRounder = function (value) { return parseFloat(value).toFixed(2); };
+														}
+
+														// Data for building the clip wave area.
+														var data = [];
+														for (var i = 0; i <= 40 * waveClipCount; i++) {
+															data.push({ x: i / (40 * waveClipCount), y: (i / (40)) });
+														}
+
+														// Scales for drawing the outer circle.
+														var gaugeCircleX = d3.scaleLinear().range([0, 2 * Math.PI]).domain([0, 1]);
+														var gaugeCircleY = d3.scaleLinear().range([0, radius]).domain([0, radius]);
+
+														// Scales for controlling the size of the clipping path.
+														var waveScaleX = d3.scaleLinear().range([0, waveClipWidth]).domain([0, 1]);
+														var waveScaleY = d3.scaleLinear().range([0, waveHeight]).domain([0, 1]);
+
+														// Scales for controlling the position of the clipping path.
+														var waveRiseScale = d3.scaleLinear()
+															// The clipping area size is the height of the fill circle + the wave height, so we position the clip wave
+															// such that the it will overlap the fill circle at all when at 0%, and will totally cover the fill
+															// circle at 100%.
+															.range([(fillCircleMargin + fillCircleRadius * 2 + waveHeight), (fillCircleMargin - waveHeight)])
+															.domain([0, 1]);
+														var waveAnimateScale = d3.scaleLinear()
+															.range([0, waveClipWidth - fillCircleRadius * 2]) // Push the clip area one full wave then snap back.
+															.domain([0, 1]);
+
+														// Scale for controlling the position of the text within the gauge.
+														var textRiseScaleY = d3.scaleLinear()
+															.range([fillCircleMargin + fillCircleRadius * 2, (fillCircleMargin + textPixels * 0.7)])
+															.domain([0, 1]);
+
+														// Center the gauge within the parent SVG.
+														var gaugeGroup = gauge.append("g")
+															.attr('transform', 'translate(' + locationX + ',' + locationY + ')');
+
+														// Draw the outer circle.
+														var gaugeCircleArc = d3.arc()
+															.startAngle(gaugeCircleX(0))
+															.endAngle(gaugeCircleX(1))
+															.outerRadius(gaugeCircleY(radius))
+															.innerRadius(gaugeCircleY(radius - circleThickness));
+														gaugeGroup.append("path")
+															.attr("d", gaugeCircleArc)
+															.style("fill", config.circleColor)
+															.attr('transform', 'translate(' + radius + ',' + radius + ')');
+
+														// Text where the wave does not overlap.
+														var text1 = gaugeGroup.append("text")
+															.text(textRounder(textStartValue) + percentText)
+															.attr("class", "liquidFillGaugeText")
+															.attr("text-anchor", "middle")
+															.attr("font-size", textPixels + "px")
+															.style("fill", config.textColor)
+															.attr('transform', 'translate(' + radius + ',' + textRiseScaleY(config.textVertPosition) + ')');
+
+														// The clipping wave area.
+														var clipArea = d3.area()
+															.x(function (d) { return waveScaleX(d.x); })
+															.y0(function (d) { return waveScaleY(Math.sin(Math.PI * 2 * config.waveOffset * -1 + Math.PI * 2 * (1 - config.waveCount) + d.y * 2 * Math.PI)); })
+															.y1(function (d) { return (fillCircleRadius * 2 + waveHeight); });
+														var waveGroup = gaugeGroup.append("defs")
+															.append("clipPath")
+															.attr("id", "clipWave" + elementId);
+														var wave = waveGroup.append("path")
+															.datum(data)
+															.attr("d", clipArea)
+															.attr("T", 0);
+
+														// The inner circle with the clipping wave attached.
+														var fillCircleGroup = gaugeGroup.append("g")
+															.attr("clip-path", "url(#clipWave" + elementId + ")");
+														fillCircleGroup.append("circle")
+															.attr("cx", radius)
+															.attr("cy", radius)
+															.attr("r", fillCircleRadius)
+															.style("fill", config.waveColor);
+
+														// Text where the wave does overlap.
+														var text2 = fillCircleGroup.append("text")
+															.text(textRounder(textStartValue) + percentText)
+															.attr("class", "liquidFillGaugeText")
+															.attr("text-anchor", "middle")
+															.attr("font-size", textPixels + "px")
+															.style("fill", config.waveTextColor)
+															.attr('transform', 'translate(' + radius + ',' + textRiseScaleY(config.textVertPosition) + ')');
+
+														// Make the value count up.
+														if (config.valueCountUp) {
+															var textTween = function () {
+																var node = d3.select(this);
+																var i = d3.interpolate(this.textContent, parseFloat(textFinalValue).toFixed(2));
+																return function (t) {
+																	node.text(textRounder(i(t)) + percentText);
+																}
+															};
+															text1.transition()
+																.duration(config.waveRiseTime)
+																.tween("text", textTween);
+															text2.transition()
+																.duration(config.waveRiseTime)
+																.tween("text", textTween);
+														}
+
+														// Make the wave rise. wave and waveGroup are separate so that horizontal and vertical movement can be controlled independently.
+														var waveGroupXPosition = fillCircleMargin + fillCircleRadius * 2 - waveClipWidth;
+														if (config.waveRise) {
+															waveGroup.attr('transform', 'translate(' + waveGroupXPosition + ',' + waveRiseScale(0) + ')')
+																.transition()
+																.duration(config.waveRiseTime)
+																.attr('transform', 'translate(' + waveGroupXPosition + ',' + waveRiseScale(fillPercent) + ')')
+																.on("start", function () { wave.attr('transform', 'translate(1,0)'); }); // This transform is necessary to get the clip wave positioned correctly when waveRise=true and waveAnimate=false. The wave will not position correctly without this, but it's not clear why this is actually necessary.
+														} else {
+															waveGroup.attr('transform', 'translate(' + waveGroupXPosition + ',' + waveRiseScale(fillPercent) + ')');
+														}
+
+														if (config.waveAnimate) animateWave();
+
+														function animateWave() {
+															wave.attr('transform', 'translate(' + waveAnimateScale(wave.attr('T')) + ',0)');
+															var w = wave.transition()
+																.duration(config.waveAnimateTime * (1 - wave.attr('T')))
+																.ease(d3.easeLinear)
+																.attr('transform', 'translate(' + waveAnimateScale(1) + ',0)')
+																.attr('T', 1)
+																.on('end', function () {
+																	wave.attr('T', 0);
+																	animateWave(config.waveAnimateTime);
+																});
+														}
+													}
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* https://c3js.org/samples/chart_gauge.html */}}
+													<h3 class="card-title">Gauge - 2</h3>
+												</div>
+												<div class="card-body">
+													<div id="gauge2" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['c3'], function (c3) {
+													c3.generate({
+														bindto: "#gauge2",
+														data: {
+															columns: [
+																['data', 91.4]
+															],
+															type: 'gauge',
+														},
+														color : {
+															pattern: ['#1ab394', '#BABABA']
+														},
+														gauge: {
+															label: {
+																format: function (value, ratio) {
+																	return value; //returning here the value and not the ratio
+																},
+															}
+														}
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* https://c3js.org/samples/chart_gauge.html */}}
+													<h3 class="card-title">Gauge - 3</h3>
+												</div>
+												<div class="card-body">
+													<div id="gauge3" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													const width = 712;
+													const height = 170;
+
+													const minAngle = -(2.5 * Math.PI / 4);
+													const maxAngle = 2.5 * Math.PI / 4;
+
+													const container = d3
+														.select("#gauge3")
+														.append("svg")
+														.attr("width", width)
+														.attr("height", height);
+
+													const svg = container
+														.append("g")
+														.attr("transform", "translate(" + width / 2 + "," + (height / 2 + ((200 - height) / 2)) + ")");
+
+													const trackArc = d3
+														.arc()
+														.innerRadius(98)
+														.outerRadius(100)
+														.startAngle(minAngle);
+
+													const track = svg
+														.append("g")
+														.attr("class", "track")
+														.append("path")
+														.attr("d", trackArc.endAngle(maxAngle))
+														.attr('fill-opacity', 0.3);
+
+													const progressArc = d3
+														.arc()
+														.innerRadius(65)
+														.outerRadius(95)
+														.startAngle(minAngle);
+
+													const progress = svg.append("g")
+														.attr("class", "progress");
+
+													const progressPath = progress.append("path")
+														.datum({ endAngle: 0 })
+														.attr("d", progressArc)
+														.style("fill", function () {
+															return "#1ab394"
+														});
+
+													function arcTween(newAngle) {
+														return function (d) {
+															var interpolate = d3.interpolate(d.endAngle, newAngle);
+															return function (t) {
+																d.endAngle = interpolate(t);
+																return progressArc(d);
+															};
+														};
+													}
+
+													function handleClick() {
+														progressPath.transition()
+															.duration(750)
+															.attrTween("d", arcTween(randomAngle()));
+													}
+
+													function randomAngle() {
+														return (Math.random() * (maxAngle - minAngle)) + minAngle;
+													}
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* url */}}
+													<h3 class="card-title">Spline chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="splinechart1" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['c3'], function (c3) {
+													c3.generate({
+														bindto: "#splinechart1",
+														data: {
+															json: [
+																{
+																	"metricDate": "2016-02-08",
+																	"vlp": 9046,
+																	"other": 904,
+																	"vdp": 10000,
+																	"home": 3543
+																}, {
+																	"metricDate": "2016-02-09",
+																	"vdp": 7000,
+																	"other": 1103,
+																	"home": 3667,
+																	"vlp": 9542
+																}, {
+																	"metricDate": "2016-02-10",
+																	"other": 1043,
+																	"vlp": 9751,
+																	"home": 3681,
+																	"vdp": 5000
+																}, {
+																	"metricDate": "2016-02-11",
+																	"other": 1433,
+																	"home": 4059,
+																	"vdp": 4000,
+																	"vlp": 9924
+																}
+															],
+															type: 'area-spline',
+															groups: [['other', 'home', 'vdp', 'vlp']],
+															keys: {
+																x: 'metricDate',
+																value: ["vlp", "home", "vdp", "other"]
+															}
+														},
+														axis: {
+															x: {
+																type: 'timeseries',
+															}
+														}
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								<!--
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* url */}}
+													<h3 class="card-title">Extended stacked area chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="chart-wrapper9" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													// function stackedAreaChart() {
+													// 	var _chart = {};
+													// 	var _width = 900, _height = 450,
+													// 		_margins = { top: 30, left: 30, right: 30, bottom: 30 },
+													// 		_x, _y,
+													// 		_data = [],
+													// 		_colors = d3.scale.ordinal(d3.schemeCategory10),
+													// 		_svg,
+													// 		_bodyG,
+													// 		_line;
+													// 	_chart.render = function () {
+													// 		if (!_svg) {
+													// 			_svg = d3.select("#chart-wrapper9").append("svg")
+													// 				.attr("height", _height)
+													// 				.attr("width", _width);
+													// 			renderAxes(_svg);
+													// 			defineBodyClip(_svg);
+													// 		}
+													// 		renderBody(_svg);
+													// 	};
+													// 	function renderAxes(svg) {
+													// 		var axesG = svg.append("g")
+													// 			.attr("class", "axes");
+													// 		renderXAxis(axesG);
+													// 		renderYAxis(axesG);
+													// 	}
+													// 	function renderXAxis(axesG) {
+													// 		var xAxis = d3.svg.axis()
+													// 			.orient("bottom")
+													// 			.scale(_x.range([0, quadrantWidth()]));
+													// 		axesG.append("g")
+													// 			.attr("class", "x axis")
+													// 			.attr("transform", function () {
+													// 				return "translate(" + xStart() + "," + yStart() + ")";
+													// 			})
+													// 			.call(xAxis);
+													// 		d3.selectAll("g.x g.tick")
+													// 			.append("line")
+													// 			.classed("grid-line", true)
+													// 			.attr("x1", 0)
+													// 			.attr("y1", 0)
+													// 			.attr("x2", 0)
+													// 			.attr("y2", -quadrantHeight());
+													// 	}
+													// 	function renderYAxis(axesG) {
+													// 		var yAxis = d3.svg.axis()
+													// 			.orient("left")
+													// 			.scale(_y.range([quadrantHeight(), 0]));
+													// 		axesG.append("g")
+													// 			.attr("class", "y axis")
+													// 			.attr("transform", function () {
+													// 				return "translate(" + xStart() + "," + yEnd() + ")";
+													// 			})
+													// 			.call(yAxis);
+													// 		d3.selectAll("g.y g.tick")
+													// 			.append("line")
+													// 			.classed("grid-line", true)
+													// 			.attr("x1", 0)
+													// 			.attr("y1", 0)
+													// 			.attr("x2", quadrantWidth())
+													// 			.attr("y2", 0);
+													// 	}
+													// 	function defineBodyClip(svg) {
+													// 		var padding = 5;
+													// 		svg.append("defs")
+													// 			.append("clipPath")
+													// 			.attr("id", "body-clip")
+													// 			.append("rect")
+													// 			.attr("x", 0 - padding)
+													// 			.attr("y", 0)
+													// 			.attr("width", quadrantWidth() + 2 * padding)
+													// 			.attr("height", quadrantHeight());
+													// 	}
+													// 	function renderBody(svg) {
+													// 		if (!_bodyG)
+													// 			_bodyG = svg.append("g")
+													// 				.attr("class", "body")
+													// 				.attr("transform", "translate("
+													// 					+ xStart() + ","
+													// 					+ yEnd() + ")")
+													// 				.attr("clip-path", "url(#body-clip)");
+													// 		var stack = d3.layout.stack() // <-A
+													// 			.offset(d3.stackOffsetExpand);
+													// 			//.keys(['value1', 'value2', 'value3'])
+													// 		var series = stack(_data); //<-B
+													// 		renderLines(series);
+													// 		renderAreas(series);
+													// 	}
+													// 	function renderLines(series) {
+													// 		_line = d3.line()
+													// 			.x(function (d, i) {
+													// 				return _x(i); //<-C
+													// 			})
+													// 			.y(function (d) {
+													// 				return _y(d[1]); //<-D
+													// 			});
+													// 		var linePaths = _bodyG.selectAll("path.line")
+													// 			.data(series);
+													// 		linePaths.enter()
+													// 			.append("path")
+													// 			.merge(linePaths)
+													// 			.style("stroke", function (d, i) {
+													// 				return _colors(i);
+													// 			})
+													// 			.attr("class", "line")
+													// 			.transition()
+													// 			.attr("d", function (d) {
+													// 				return _line(d);
+													// 			});
+													// 	}
+													// 	function renderAreas(series) {
+													// 		var area = d3.area()
+													// 			.x(function (d, i) {
+													// 				return _x(i); //<-E
+													// 			})
+													// 			.y0(function (d) { return _y(d[0]); }) //<-F
+													// 			.y1(function (d) {
+													// 				return _y(d[1]); //<-G
+													// 			});
+													// 		var areaPaths = _bodyG.selectAll("path.area")
+													// 			.data(series);
+													// 		areaPaths.enter()
+													// 			.append("path")
+													// 			.merge(areaPaths)
+													// 			.style("fill", function (d, i) {
+													// 				return _colors(i);
+													// 			})
+													// 			.attr("class", "area")
+													// 			.transition()
+													// 			.attr("d", function (d) {
+													// 				return area(d);
+													// 			});
+													// 	}
+													// 	function xStart() {
+													// 		return _margins.left;
+													// 	}
+													// 	function yStart() {
+													// 		return _height - _margins.bottom;
+													// 	}
+													// 	function xEnd() {
+													// 		return _width - _margins.right;
+													// 	}
+													// 	function yEnd() {
+													// 		return _margins.top;
+													// 	}
+													// 	function quadrantWidth() {
+													// 		return _width - _margins.left - _margins.right;
+													// 	}
+													// 	function quadrantHeight() {
+													// 		return _height - _margins.top - _margins.bottom;
+													// 	}
+													// 	_chart.width = function (w) {
+													// 		if (!arguments.length) return _width;
+													// 		_width = w;
+													// 		return _chart;
+													// 	};
+													// 	_chart.height = function (h) {
+													// 		if (!arguments.length) return _height;
+													// 		_height = h;
+													// 		return _chart;
+													// 	};
+													// 	_chart.margins = function (m) {
+													// 		if (!arguments.length) return _margins;
+													// 		_margins = m;
+													// 		return _chart;
+													// 	};
+													// 	_chart.colors = function (c) {
+													// 		if (!arguments.length) return _colors;
+													// 		_colors = c;
+													// 		return _chart;
+													// 	};
+													// 	_chart.x = function (x) {
+													// 		if (!arguments.length) return _x;
+													// 		_x = x;
+													// 		return _chart;
+													// 	};
+													// 	_chart.y = function (y) {
+													// 		if (!arguments.length) return _y;
+													// 		_y = y;
+													// 		return _chart;
+													// 	};
+													// 	_chart.data = function (data) {
+													// 		if (!arguments.length) return _data;
+													// 		_data = data;
+													// 		return _chart;
+													// 	};
+													// 	return _chart;
+													// }
+													// function randomData() {
+													// 	return Math.random() * 9;
+													// }
+													// function update() {
+													// 	data = d3.range(numberOfDataPoint).map(function (i) {
+													// 		return { value1: randomData(), value2: randomData(), value3: randomData() };
+													// 	});
+													// 	chart.data(data).render();
+													// }
+													// var numberOfDataPoint = 51,
+													// 	data = [];
+													// var chart = stackedAreaChart()
+													// 	.x(d3.scaleLinear().domain([0, numberOfDataPoint - 1]))
+													// 	.y(d3.scaleLinear().domain([0, 1]));
+													// update();
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								-->
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* url */}}
+													<h3 class="card-title">Extended stacked area chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="areachart1" style="height: 300px;">
+													</div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var svg = d3.select("#areachart1").append("svg").attr("width", 712).attr("height", 300)
+													var margin = { top: 9, right: 20, bottom: 30, left: 50 }
+													var width = svg.attr("width") - margin.left - margin.right,
+														height = svg.attr("height") - margin.top - margin.bottom;
+
+													var parseDate = d3.timeParse("%Y %b %d");
+
+													var x = d3.scaleTime().range([0, width]),
+														y = d3.scaleLinear().range([height, 0]),
+														z = d3.scaleOrdinal(d3.schemeCategory10);
+
+													var stack = d3.stack();
+
+													var area = d3.area()
+														.x(function (d, i) {
+															// return x(d.data.date);
+															return parseDate(d.data.date);
+														})
+														.y0(function (d) {
+															return y(d[0]);
+														})
+														.y1(function (d) {
+															return y(d[1]);
+														});
+													var g = svg.append("g")
+														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													var dataset = d3.tsv("/demo/marketshare.tsv", function(data) {
+														return data;
+													});
+													dataset.then(function (data) {
+														var keys = data.columns.slice(1);
+														x.domain(d3.extent(data, function (d) { return d.date; }));
+														z.domain(keys);
+														stack.keys(keys);
+														var layer = g.selectAll(".layer")
+															.data(stack(data))
+															.enter().append("g")
+															.attr("class", "layer");
+
+														layer.append("path")
+															.attr("class", "area")
+															.style("fill", function (d) { return z(d.key); })
+															.attr("d", area);
+
+														layer.filter(function (d) { return d[d.length - 1][1] - d[d.length - 1][0] > 0.01; })
+															.append("text")
+															.attr("x", width - 6)
+															.attr("y", function (d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); })
+															.attr("dy", ".35em")
+															.style("font", "10px sans-serif")
+															.style("text-anchor", "end")
+															.text(function (d) { return d.key; });
+
+														g.append("g")
+															.attr("class", "axis axis--x")
+															.attr("transform", "translate(0," + height + ")")
+															.call(d3.axisBottom(x));
+
+														g.append("g")
+															.attr("class", "axis axis--y")
+															.call(d3.axisLeft(y).ticks(10, "%"));
+													});
+
+													function type(d, i, columns) {
+														d.date = parseDate(d.date);
+														for (var i = 1, n = columns.length; i < n; ++i) d[columns[i]] = d[columns[i]] / 100;
+														return d;
+													}
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/mbostock/8d2112a115ad95f4a6848001389182fb */}}
+													<h3 class="card-title">Radial normalized stacked bar chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="rnsbc1" style="height: 300px;">
+													</div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													// (function (global, factory) {
+													// 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports, require("d3-scale")) :
+													// 		typeof define === "function" && define.amd ? define(["exports", "d3-scale"], factory) :
+													// 			(factory(global.d3 = global.d3 || {}, global.d3));
+													// }(this, function (exports, d3Scale) {
+													// 	'use strict';
+
+													// 	function square(x) {
+													// 		return x * x;
+													// 	}
+
+													// 	function radial() {
+													// 		var linear = d3Scale.scaleLinear();
+
+													// 		function scale(x) {
+													// 			return Math.sqrt(linear(x));
+													// 		}
+
+													// 		scale.domain = function (_) {
+													// 			return arguments.length ? (linear.domain(_), scale) : linear.domain();
+													// 		};
+
+													// 		scale.nice = function (count) {
+													// 			return (linear.nice(count), scale);
+													// 		};
+
+													// 		scale.range = function (_) {
+													// 			return arguments.length ? (linear.range(_.map(square)), scale) : linear.range().map(Math.sqrt);
+													// 		};
+
+													// 		scale.ticks = linear.ticks;
+													// 		scale.tickFormat = linear.tickFormat;
+
+													// 		return scale;
+													// 	}
+
+													// 	exports.scaleRadial = radial;
+
+													// 	Object.defineProperty(exports, '__esModule', { value: true });
+													// }));
+													// var svg = d3.select("#rnsbc1").append("svg").attr("width", 712).attr("height", 712),
+													// 	width = +svg.attr("width"),
+													// 	height = +svg.attr("height"),
+													// 	innerRadius = 180,
+													// 	outerRadius = Math.min(width, height) / 2 - 6,
+													// 	g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+													// var x = d3.scaleBand()
+													// 	.range([0, 2 * Math.PI])
+													// 	.align(0);
+
+													// var y = d3.scaleRadial()
+													// 	.range([innerRadius, outerRadius]);
+
+													// var z = d3.scaleOrdinal()
+													// 	.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+													// var dataset = d3.csv("/demo/sbc1.csv", function (data) {
+													// 	return data;
+													// });
+													// dataset.then(function (data) {
+													// 	//keys = data.columns.slice(1);
+													// 	return data.map(function (d) {
+													// 		var total = 0;
+													// 		for (i = 1; i < data.columns.length; ++i) {
+													// 			total += d[data.columns[i]] = +d[data.columns[i]];
+													// 		}
+													// 		d.Total = total;
+													// 		return d;
+													// 	});
+													// }).then(function (data) {
+													// 	data.sort(function (a, b) { return b[data.columns[1]] / b.Total - a[data.columns[1]] / a.Total; });
+													// 	x.domain(data.map(function (d) { return d.State; }));
+													// 	z.domain(data.columns.slice(1));
+
+													// 	g.append("g")
+													// 		.selectAll("g")
+													// 		.data(d3.stack()
+													// 			.keys(data.columns.slice(1))
+													// 			.offset(d3.stackOffsetExpand)
+													// 			(data))
+													// 		.enter().append("g")
+													// 		.attr("fill", function (d) { return z(d.key); })
+													// 		.selectAll("path")
+													// 		.data(function (d) { return d; })
+													// 		.enter().append("path")
+													// 		.attr("d", d3.arc()
+													// 			.innerRadius(function (d) { return y(d[0]); })
+													// 			.outerRadius(function (d) { return y(d[1]); })
+													// 			.startAngle(function (d) { return x(d.data.State); })
+													// 			.endAngle(function (d) { return x(d.data.State) + x.bandwidth(); })
+													// 			.padAngle(0.01)
+													// 			.padRadius(innerRadius));
+
+													// 	var label = g.append("g")
+													// 		.selectAll("g")
+													// 		.data(data)
+													// 		.enter().append("g")
+													// 		.attr("text-anchor", "middle")
+													// 		.attr("transform", function (d) { return "rotate(" + ((x(d.State) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")translate(" + innerRadius + ",0)"; });
+
+													// 	label.append("line")
+													// 		.attr("x2", -5)
+													// 		.attr("stroke", "#000");
+
+													// 	label.append("text")
+													// 		.attr("transform", function (d) { return (x(d.State) + x.bandwidth() / 2 + Math.PI / 2) % (2 * Math.PI) < Math.PI ? "rotate(90)translate(0,16)" : "rotate(-90)translate(0,-9)"; })
+													// 		.text(function (d) { return d.State; });
+
+													// 	var yAxis = g.append("g")
+													// 		.attr("text-anchor", "middle");
+
+													// 	var yTick = yAxis
+													// 		.selectAll("g")
+													// 		.data(y.ticks(5).slice(1))
+													// 		.enter().append("g");
+
+													// 	yTick.append("circle")
+													// 		.attr("fill", "none")
+													// 		.attr("stroke", "#000")
+													// 		.attr("r", y);
+
+													// 	yTick.append("text")
+													// 		.attr("y", function (d) { return -y(d); })
+													// 		.attr("dy", "0.35em")
+													// 		.attr("fill", "none")
+													// 		.attr("stroke", "#fff")
+													// 		.attr("stroke-width", 5)
+													// 		.attr("stroke-linejoin", "round")
+													// 		.text(y.tickFormat(5, "%"));
+
+													// 	yTick.append("text")
+													// 		.attr("y", function (d) { return -y(d); })
+													// 		.attr("dy", "0.35em")
+													// 		.text(y.tickFormat(5, "%"));
+
+													// 	var legend = g.append("g")
+													// 		.selectAll("g")
+													// 		.data(data.columns.slice(1).reverse())
+													// 		.enter().append("g")
+													// 		.attr("transform", function (d, i) { return "translate(-40," + (i - (data.columns.length - 1) / 2) * 20 + ")"; });
+
+													// 	legend.append("rect")
+													// 		.attr("width", 18)
+													// 		.attr("height", 18)
+													// 		.attr("fill", z);
+
+													// 	legend.append("text")
+													// 		.attr("x", 24)
+													// 		.attr("y", 9)
+													// 		.attr("dy", "0.35em")
+													// 		.text(function (d) { return d; });
+													// });
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/mbostock/6fead6d1378d6df5ae77bb6a719afcb2 */}}
+													<h3 class="card-title">Radial stacked bar chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="rsbc1" style="height: 300px;">
+													</div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/d3noob/ae9786c26d6a821eefeabe60dec350a9 */}}
+													<h3 class="card-title">Multiple spline chart</h3>
+												</div>
+												<div class="card-body">
+													<div id="mlc1" style="height: auto">
+													</div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													// Set the dimensions of the canvas / graph
+													var margin = { top: 30, right: 20, bottom: 30, left: 50 },
+														width = 712 - margin.left - margin.right,
+														height = 300 - margin.top - margin.bottom;
+													var svg = d3.select("#mlc1")
+														.append("svg")
+														.attr("width", width + margin.left + margin.right)
+														.attr("height", height + margin.top + margin.bottom)
+														.append("g")
+														.attr("transform",
+															"translate(" + margin.left + "," + margin.top + ")");
+
+													// Parse the date / time
+													var parseDate = d3.timeParse("%b %Y");
+
+													// Set the ranges
+													var x = d3.scaleTime().range([0, width]);
+													var y = d3.scaleLinear().range([height, 0]);
+
+													// Define the line
+													var line = d3.line()
+														.x(function (d) { return x(d.date); })
+														.y(function (d) { return y(d.price); });
+
+													// Get the data
+													var dataset = d3.tsv("/demo/stocks.csv", function (data) {
+														return data;
+													});
+													dataset.then(function (data) {
+														return data.map(function (d) {
+															d.date = parseDate(d.date);
+															d.price = +d.price;
+															return d;
+														});
+													})
+													.then(function (data) {
+														// Scale the range of the data
+														x.domain(d3.extent(data, function (d) { return d.date; }));
+														y.domain([0, d3.max(data, function (d) { return d.price; })]);
+
+														// Nest the entries by symbol
+														var nest = d3.nest()
+															.key(function (d) { return d.symbol; })
+															.entries(data);
+
+														// set the colour scale
+														var color = d3.scaleOrdinal(d3.schemeCategory10);
+														// Loop through each symbol / key
+														nest.map(function (d) {
+															svg.append("path")
+																.style("stroke-width", "2")
+																.style("fill", "none")
+																.style("stroke", function () { // Add the colours dynamically
+																	return d.color = color(d.key);
+																})
+																.attr("d", line(d.values));
+														});
+
+														// Add the X Axis
+														svg.append("g")
+															.attr("class", "axis")
+															.attr("transform", "translate(0," + height + ")")
+															.call(d3.axisBottom(x))
+															.style("fill", "none")
+															.style("stoke", "grey")
+															.style("stoke-width", "1")
+															.style("shape-rendering", "crispEdges");
+
+														// Add the Y Axis
+														svg.append("g")
+															.attr("class", "axis")
+															.call(d3.axisLeft(y))
+															.style("fill", "none")
+															.style("stoke", "grey")
+															.style("stoke-width", "1")
+															.style("shape-rendering", "crispEdges");
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* url */}}
+													<h3 class="card-title">Stacked bar chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="sbc1" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var svg = d3.select("#sbc1").append("svg").attr("width", 712).attr("height", 300),
+														margin = { top: 20, right: 60, bottom: 30, left: 40 },
+														width = +svg.attr("width") - margin.left - margin.right,
+														height = +svg.attr("height") - margin.top - margin.bottom,
+														g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													var x = d3.scaleBand()
+														.rangeRound([0, width])
+														.padding(0.1)
+														.align(0.1);
+
+													var y = d3.scaleLinear()
+														.rangeRound([height, 0]);
+
+													var z = d3.scaleOrdinal()
+														.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+													var stack = d3.stack()
+														.offset(d3.stackOffsetExpand);
+													
+													var dataset = d3.csv("/demo/sbc1.csv", function (data) {
+														return data;
+													});
+													dataset.then(function (data) {
+														x.domain(data.map(function (d) { return d.State; }));
+														z.domain(data.columns.slice(1));
+														var serie = g.selectAll(".serie")
+															.data(stack.keys(data.columns.slice(1))(data))
+															.enter().append("g")
+															.attr("class", "serie")
+															.attr("fill", function (d) { return z(d.key); });
+
+														serie.selectAll("rect")
+															.data(function (d) { return d; })
+															.enter().append("rect")
+															.attr("x", function (d) { return x(d.data.State); })
+															.attr("y", function (d) { return y(d[1]); })
+															.attr("height", function (d) { return y(d[0]) - y(d[1]); })
+															.attr("width", x.bandwidth());
+
+														g.append("g")
+															.attr("class", "axis axis--x")
+															.attr("transform", "translate(0," + height + ")")
+															.call(d3.axisBottom(x));
+
+														g.append("g")
+															.attr("class", "axis axis--y")
+															.call(d3.axisLeft(y).ticks(10, "%"));
+
+														var legend = serie.append("g")
+															.attr("class", "legend")
+															.attr("transform", function (d) { var d = d[d.length - 1]; return "translate(" + (x(d.data.State) + x.bandwidth()) + "," + ((y(d[0]) + y(d[1])) / 2) + ")"; });
+
+														legend.append("line")
+															.attr("x1", -6)
+															.attr("x2", 6)
+															.attr("stroke", "#000");
+
+														legend.append("text")
+															.attr("x", 9)
+															.attr("dy", "0.35em")
+															.attr("fill", "#000")
+															.style("font", "10px sans-serif")
+															.text(function (d) { return d.key; });
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/*
+													https://cal-heatmap.com/v2/
+													https://github.com/DKirwan/calendar-heatmap
+													*/}}
+													<h3 class="card-title">Stacked bar chart - 2</h3>
+												</div>
+												<div class="card-body">
+													<div id="sbc2" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var svg = d3.select("#sbc2").append("svg").attr("width", 712).attr("height", 300),
+														margin = { top: 20, right: 60, bottom: 30, left: 40 },
+														width = +svg.attr("width") - margin.left - margin.right,
+														height = +svg.attr("height") - margin.top - margin.bottom,
+														g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													var x = d3.scaleBand()
+														.rangeRound([0, width])
+														.padding(0.1)
+														.align(0.1);
+
+													var y = d3.scaleLinear()
+														.rangeRound([height, 0]);
+
+													var z = d3.scaleOrdinal()
+														.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+													var dataset = d3.csv("/demo/sbc1.csv", function (data) {
+														return data;
+													});
+													var keys;
+													dataset.then(function (data) {
+														keys = data.columns.slice(1);
+														var c = data.map(function (d) {
+															var total = 0;
+															for (i = 1; i < data.columns.length; ++i) {
+																total += d[data.columns[i]] = +d[data.columns[i]];
+															}
+															d.Total = total;
+															return d;
+														});
+														return c;
+													}).then(function (data) {
+														data.sort(function (a, b) {
+															return b.Total - a.Total;
+														});
+														var max = d3.max(data, function (d) {
+															return d.Total
+														});
+														y.domain([0, max]);
+														x.domain(data.map(function (d) { return d.State; }));
+														z.domain(keys);
+														var serie = g.selectAll(".serie")
+															.data(d3.stack().keys(keys)(data))
+															.enter().append("g")
+															.attr("class", "serie")
+															.attr("fill", function (d) { return z(d.key); });
+
+														serie.selectAll("rect")
+															.data(function (d) { return d; })
+															.enter().append("rect")
+															.attr("x", function (d) { return x(d.data.State); })
+															.attr("y", function (d) { return y(d[1]); })
+															.attr("height", function (d) { return y(d[0]) - y(d[1]); })
+															.attr("width", x.bandwidth());
+
+														g.append("g")
+															.attr("class", "axis axis--x")
+															.attr("transform", "translate(0," + height + ")")
+															.call(d3.axisBottom(x));
+														
+														g.append("g")
+															.attr("class", "axis axis--y")
+															.call(d3.axisLeft(y).ticks(null, "s"))
+															.append("text")
+															.attr("x", 2)
+															.attr("y", y(y.ticks().pop()) + 0.5)
+															.attr("dy", "0.32em")
+															.attr("fill", "#000")
+															.attr("font-weight", "bold")
+															.attr("text-anchor", "start")
+															.text("Population");
+														
+														var legend = g.append("g")
+															.attr("font-family", "sans-serif")
+															.attr("font-size", 10)
+															.attr("text-anchor", "end")
+															.selectAll("g")
+															.data(keys.slice().reverse())
+															.enter().append("g")
+															.attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
+
+														legend.append("rect")
+															.attr("x", width - 19)
+															.attr("width", 19)
+															.attr("height", 19)
+															.attr("fill", z);
+
+														legend.append("text")
+															.attr("x", width - 24)
+															.attr("y", 9.5)
+															.attr("dy", "0.32em")
+															.text(function (d) { return d; });
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/**/}}
+													<h3 class="card-title">Stacked bar chart - 3</h3>
+												</div>
+												<div class="card-body">
+													<div id="sbc3" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+													require(['d3'], function (d3) {
+														var svg = d3.select("#sbc3").append("svg").attr("width", 712).attr("height", 712),
+															margin = { top: 20, right: 60, bottom: 30, left: 40 },
+															width = +svg.attr("width") - margin.left - margin.right,
+															height = +svg.attr("height") - margin.top - margin.bottom,
+															g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+														var y = d3.scaleBand()
+															.rangeRound([0, height])
+															.padding(0.1)
+															.align(0.1);
+
+														var x = d3.scaleLinear()
+															.rangeRound([0, width]);
+
+														var z = d3.scaleOrdinal()
+															.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+														var stack = d3.stack()
+															.offset(d3.stackOffsetExpand);
+
+														var dataset = d3.csv("/demo/sbc1.csv", function (data) {
+															return data;
+														});
+														dataset.then(function (data) {
+															y.domain(data.map(function (d) { return d.State; }));
+															z.domain(data.columns.slice(1));
+															var serie = g.selectAll(".serie")
+																.data(stack.keys(data.columns.slice(1))(data))
+																.enter().append("g")
+																.attr("class", "serie")
+																.attr("fill", function (d) { return z(d.key); });
+
+															serie.selectAll("rect")
+																.data(function (d) { return d; })
+																.enter().append("rect")
+																.attr("x", function (d) { return x(d[0]); })
+																.attr("y", function (d) { return y(d.data.State); })
+																.attr("height", y.bandwidth())
+																.attr("width", function (d) { return x(d[1]) - x(d[0]); });
+
+															g.append("g")
+																.attr("class", "axis axis--x")
+																.attr("transform", "translate(0," + height + ")")
+																.call(d3.axisBottom(x).ticks(10, "%"));
+
+															g.append("g")
+																.attr("class", "axis axis--y")
+																.attr("transform", "translate(0,0)")
+																.call(d3.axisLeft(y));
+														});
+													});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://blockbuilder.org/Andrew-Reid/0aedd5f3fb8b099e3e10690bd38bd458 */}}
+													<h3 class="card-title">Stacked bar chart - 4</h3>
+												</div>
+												<div class="card-body">
+													<div id="sbc4" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var svg = d3.select("#sbc4").append("svg").attr("width", 712).attr("height", 712),
+														margin = { top: 20, right: 60, bottom: 30, left: 40 },
+														width = +svg.attr("width") - margin.left - margin.right,
+														height = +svg.attr("height") - margin.top - margin.bottom,
+														g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													var x = d3.scaleLinear()
+														.rangeRound([0, width]);
+
+													var y = d3.scaleBand()
+														.rangeRound([0, height])
+														.paddingInner(0.05)
+														.align(0.1);
+
+													var z = d3.scaleOrdinal()
+														.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+													var dataset = d3.csv("/demo/sbc1.csv", function (data) {
+														return data;
+													});
+													var keys;
+													dataset.then(function (data) {
+														keys = data.columns.slice(1);
+														var c = data.map(function (d) {
+															var total = 0;
+															for (i = 1; i < data.columns.length; ++i) {
+																total += d[data.columns[i]] = +d[data.columns[i]];
+															}
+															d.Total = total;
+															return d;
+														});
+														return c;
+													}).then(function (data) {
+														data.sort(function (a, b) { return b.Total - a.Total; });
+														y.domain(data.map(function (d) { return d.State; }));
+														x.domain([0, d3.max(data, function (d) { return d.Total; })]).nice();
+														z.domain(keys);
+
+														g.append("g")
+															.selectAll("g")
+															.data(d3.stack().keys(keys)(data))
+															.enter().append("g")
+															.attr("fill", function (d) { return z(d.key); })
+															.selectAll("rect")
+															.data(function (d) { return d; })
+															.enter().append("rect")
+															.attr("x", function (d) { return x(d[0]); })
+															.attr("y", function (d) { return y(d.data.State); })
+															.attr("width", function (d) { return x(d[1]) - x(d[0]); })
+															.attr("height", y.bandwidth());
+
+														g.append("g")
+															.attr("class", "axis")
+															.attr("transform", "translate(0,0)")
+															.call(d3.axisLeft(y));
+
+														g.append("g")
+															.attr("class", "axis")
+															.attr("transform", "translate(0," + height + ")")
+															.call(d3.axisBottom(x).ticks(null, "s"))
+															.append("text")
+															.attr("y", 2)
+															.attr("x", x(x.ticks().pop()) + 0.5)
+															.attr("dy", "0.32em")
+															.attr("fill", "#000")
+															.attr("font-weight", "bold")
+															.attr("text-anchor", "start")
+															.text("Population")
+															.attr("transform", "translate(" + (-width) + ",-10)");
+
+														var legend = g.append("g")
+															.attr("font-family", "sans-serif")
+															.attr("font-size", 10)
+															.attr("text-anchor", "end")
+															.selectAll("g")
+															.data(keys.slice().reverse())
+															.enter().append("g")
+															.attr("transform", function (d, i) { return "translate(-50," + (300 + i * 20) + ")"; });
+
+														legend.append("rect")
+															.attr("x", width - 19)
+															.attr("width", 19)
+															.attr("height", 19)
+															.attr("fill", z);
+
+														legend.append("text")
+															.attr("x", width - 24)
+															.attr("y", 9.5)
+															.attr("dy", "0.32em")
+															.text(function (d) { return d; });
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/*
+														https://cal-heatmap.com/v2/
+														https://github.com/DKirwan/calendar-heatmap
+													*/}}
+													<h3 class="card-title">Calendar chart - 1</h3>
+												</div>
+												<div class="card-body">
+													<div id="hm1" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var width = 712,
+														height = 160,
+														cellSize = Math.floor(width/53); // cell size
+													var margin = { top: 20, right: 60, bottom: 30, left: 15 };
+
+													var percent = d3.format(".1%"),
+														format = d3.timeFormat("%Y-%m-%d");
+
+													var color = d3.scaleQuantize()
+														.domain([-0.03, 0.03])
+														.range(["#f46d43", "#fdae61", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"]);
+													
+													var svg = d3.select("#hm1").selectAll("svg")
+														.data(d3.range(2018, 2019))
+														.enter()
+														.append("svg")
+														.attr("width", width)
+														.attr("height", height)
+														.append("g")
+														.attr("transform", "translate("+margin.left+","+margin.top+")");
+
+													// svg.append("text")
+													// 	.attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+													// 	.style("text-anchor", "middle")
+													// 	.attr("dy", -30)
+													// 	.text(function (d) { return d; });
+
+													// var rect = svg.selectAll(".day")
+													// 	.data(function (d) { return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+													// 	.enter()
+													// 	.append("rect")
+													// 	.attr("class", "day")
+													// 	.style("fill", function (d) { return color(0.01); })
+													// 	.style("stoke", "#ccc")
+													// 	.attr("width", cellSize - 2)
+													// 	.attr("height", cellSize - 2)
+													// 	.attr("x", function (d) { return d3.timeWeek.count(d3.timeYear(d), d) * cellSize; })
+													// 	.attr("y", function (d) { return d.getDay() * cellSize; })
+													// 	.datum(format);
+													svg.append("g")
+														.attr("fill", "none")
+														.attr("stroke", "#ccc")
+														.attr("stroke-width", "0.25px")
+														.selectAll("path")
+														.data(function (d) { return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+														.enter().append("path")
+														.attr("d", function (d) {
+															var t1 = new Date(d.getFullYear(), d.getMonth() + 1, 0),
+																d0 = d.getDay(), w0 = d3.timeWeek.count(d3.timeYear(d), d);
+															d1 = t1.getDay(), w1 = d3.timeWeek.count(d3.timeYear(t1), t1);
+															return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+																+ "H" + w0 * cellSize + "V" + 7 * cellSize
+																+ "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+																+ "H" + (w1 + 1) * cellSize + "V" + 0
+																+ "H" + (w0 + 1) * cellSize + "Z";
+														});
+													// var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+													// months.forEach(function (d, i) {
+													// 	x = 4 + (3.5 * i);
+													// 	x = x + "em";
+													// 	svg.append("text")
+													// 		.style("text-anchor", "end")
+													// 		.attr("class", "month")
+													// 		.attr("dy", "-.25em")
+													// 		.attr("dx", x)
+													// 		.text(d);
+													// });
+													// var days = ['日', '一', '二', '三', '四', '五', '六'];
+													// days.forEach(function (d, i) {
+													// 	y = 0.8 + (1.7 * i);
+													// 	y = y + "em";
+													// 	svg.append("text")
+													// 		.style("text-anchor", "end")
+													// 		.attr("dy", y)
+													// 		.attr("dx", "-1em")
+													// 		.text(d);
+													// });
+													var circle = svg.selectAll(".day")
+														.data(function (d) { return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+														.enter()
+														.append("circle")
+														.attr("class", "day")
+														.style("fill", "#eee")
+														.attr("r", cellSize/2 - 1)
+														.attr("cx", function (d) { return d3.timeWeek.count(d3.timeYear(d), d) * cellSize + cellSize / 2; })
+														.attr("cy", function (d) { return d.getDay() * cellSize + cellSize / 2; })
+														.datum(format);
+
+													circle.append("title")
+														.text(function (d) { return d; });
+
+													var dataset = d3.csv("/demo/calendar.csv", function (data) {
+														return data;
+													});
+													dataset.then(function (csv) {
+														var data = d3.nest()
+															.key(function (d) { return d.Date; })
+															.rollup(function (d) { return (d[0].Close - d[0].Open) / d[0].Open; })
+															.map(csv);
+														circle.filter(function (d) {
+																// d => yyyy-MM-dd
+																return data.has(d);
+															})
+															.style("fill", function (d) {
+																return color(data.get(d));
+															})
+															.select("title")
+															.text(function (d) {
+																return d + ": " + data.get(d);
+															});
+													});
+
+													// var svgContainer = d3.select("#legend").append("svg")
+													// 	.attr("width", 800)
+													// 	.attr("height", 25);
+													// svgContainer.append("text")
+													// 	.attr("x", 0)
+													// 	.attr("y", 25)
+													// 	.text("Faible concentration d'accidents")
+
+													// var rectangle = svgContainer.append("rect")
+													// 	.attr("x", 160)
+													// 	.attr("y", 10)
+													// 	.attr("width", 20)
+													// 	.attr("height", 20).attr("fill", "#006837");
+
+													// svgContainer.append("rect")
+													// 	.attr("x", 190)
+													// 	.attr("y", 10)
+													// 	.attr("width", 20)
+													// 	.attr("height", 20).attr("fill", "#A6D96A");
+
+													// svgContainer.append("rect")
+													// 	.attr("x", 220)
+													// 	.attr("y", 10)
+													// 	.attr("width", 20)
+													// 	.attr("height", 20).attr("fill", "#FEE08B"); svgContainer.append("rect")
+													// 		.attr("x", 250)
+													// 		.attr("y", 10)
+													// 		.attr("width", 20)
+													// 		.attr("height", 20).attr("fill", "#A50026");
+
+													// svgContainer.append("text")
+													// 	.attr("x", 280)
+													// 	.attr("y", 25)
+													// 	.text("Forte concentration d'accidents")
+													});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/*
+													https://cal-heatmap.com/v2/
+													https://github.com/DKirwan/calendar-heatmap
+													*/}}
+													<h3 class="card-title">Calendar chart - 2</h3>
+												</div>
+												<div class="card-body">
+													<div id="hm2" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													var width = 712,
+														height = 160,
+														cellSize = Math.floor(width / 53); // cell size
+													var margin = { top: 20, right: 60, bottom: 30, left: 15 };
+
+													var percent = d3.format(".1%"),
+														format = d3.timeFormat("%Y-%m-%d");
+
+													var color = d3.scaleQuantize()
+														.domain([-0.03, 0.03])
+														.range(["#f46d43", "#fdae61", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"]);
+
+													var svg = d3.select("#hm2").selectAll("svg")
+														.data(d3.range(2018, 2019))
+														.enter()
+														.append("svg")
+														.attr("width", width)
+														.attr("height", height)
+														.append("g")
+														.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+													// svg.append("text")
+													// 	.attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+													// 	.style("text-anchor", "middle")
+													// 	.attr("dy", -30)
+													// 	.text(function (d) { return d; });
+
+													var rect = svg.selectAll(".day")
+														.data(function (d) { return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+														.enter()
+														.append("rect")
+														.attr("class", "day")
+														.style("fill", "#eee")
+														.style("stoke", "#ccc")
+														.attr("width", cellSize - 2)
+														.attr("height", cellSize - 2)
+														.attr("x", function (d) { return d3.timeWeek.count(d3.timeYear(d), d) * cellSize + 1; })
+														.attr("y", function (d) { return d.getDay() * cellSize + 1; })
+														.datum(format);
+													svg.append("g")
+														.attr("fill", "none")
+														.attr("stroke", "#999")
+														.attr("stroke-width", "0.5px")
+														.selectAll("path")
+														.data(function (d) { return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+														.enter().append("path")
+														.attr("d", function (d) {
+															var t1 = new Date(d.getFullYear(), d.getMonth() + 1, 0),
+																d0 = d.getDay(), w0 = d3.timeWeek.count(d3.timeYear(d), d);
+															d1 = t1.getDay(), w1 = d3.timeWeek.count(d3.timeYear(t1), t1);
+															return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+																+ "H" + w0 * cellSize + "V" + 7 * cellSize
+																+ "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+																+ "H" + (w1 + 1) * cellSize + "V" + 0
+																+ "H" + (w0 + 1) * cellSize + "Z";
+														});
+													// var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+													// months.forEach(function (d, i) {
+													// 	x = 4 + (3.5 * i);
+													// 	x = x + "em";
+													// 	svg.append("text")
+													// 		.style("text-anchor", "end")
+													// 		.attr("class", "month")
+													// 		.attr("dy", "-.25em")
+													// 		.attr("dx", x)
+													// 		.text(d);
+													// });
+													// var days = ['日', '一', '二', '三', '四', '五', '六'];
+													// days.forEach(function (d, i) {
+													// 	y = 0.8 + (1.7 * i);
+													// 	y = y + "em";
+													// 	svg.append("text")
+													// 		.style("text-anchor", "end")
+													// 		.attr("dy", y)
+													// 		.attr("dx", "-1em")
+													// 		.text(d);
+													// });
+
+													rect.append("title")
+														.text(function (d) { return d; });
+
+													var dataset = d3.csv("/demo/calendar.csv", function (data) {
+														return data;
+													});
+													dataset.then(function (csv) {
+														var data = d3.nest()
+															.key(function (d) { return d.Date; })
+															.rollup(function (d) { return (d[0].Close - d[0].Open) / d[0].Open; })
+															.map(csv);
+														rect.filter(function (d) {
+															// d => yyyy-MM-dd
+															return data.has(d);
+														})
+															.style("fill", function (d) {
+																return color(data.get(d));
+															})
+															.select("title")
+															.text(function (d) {
+																return d + ": " + data.get(d);
+															});
+													});
+
+													// var svgContainer = d3.select("#legend").append("svg")
+													// 	.attr("width", 800)
+													// 	.attr("height", 25);
+													// svgContainer.append("text")
+													// 	.attr("x", 0)
+													// 	.attr("y", 25)
+													// 	.text("Faible concentration d'accidents")
+
+													// var rectangle = svgContainer.append("rect")
+													// 	.attr("x", 160)
+													// 	.attr("y", 10)
+													// 	.attr("width", 20)
+													// 	.attr("height", 20).attr("fill", "#006837");
+
+													// svgContainer.append("rect")
+													// 	.attr("x", 190)
+													// 	.attr("y", 10)
+													// 	.attr("width", 20)
+													// 	.attr("height", 20).attr("fill", "#A6D96A");
+
+													// svgContainer.append("rect")
+													// 	.attr("x", 220)
+													// 	.attr("y", 10)
+													// 	.attr("width", 20)
+													// 	.attr("height", 20).attr("fill", "#FEE08B"); svgContainer.append("rect")
+													// 		.attr("x", 250)
+													// 		.attr("y", 10)
+													// 		.attr("width", 20)
+													// 		.attr("height", 20).attr("fill", "#A50026");
+
+													// svgContainer.append("text")
+													// 	.attr("x", 280)
+													// 	.attr("y", 25)
+													// 	.text("Forte concentration d'accidents")
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://h4rrydog.github.io/placeMe/ */}}
+													<h3 class="card-title">Network traffic chart</h3>
+												</div>
+												<div class="card-body">
+													<div id="chart-wrapper12" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3', 'jquery'], function (d3, $) {
+													// var relationshipJSON = {
+													// 	"partner": {
+													// 		"MF": 37000,
+													// 		"FF": 20000,
+													// 		"MM": 13000
+													// 	},
+													// 	"single": {
+													// 		"M": 27000,
+													// 		"F": 13000
+													// 	}
+													// };
+													// var WIDTH = 600,
+													// 	HEIGHT = 250,
+													// 	RADIUS = Math.min(WIDTH, HEIGHT) / 2,
+													// 	MARGIN = 20,
+													// 	SPACING = 10;
+
+													// // Generate statistics
+													// var relationshipPartners,   // total numbers of partners
+													// 	relationshipSingles,    // total number of singles
+													// 	relationshipTotal,      // total number of people
+													// 	relationshipStatusData, // data array for donut graph (single v partner)
+													// 	genderStatusData,       // data array for gender ring (male v female)
+													// 	singleData,             // data array for singles pictogram
+													// 	partnerData;            // data array for partners pictogram
+
+													// relationshipPartners = relationshipJSON["partner"]["MF"] +
+													// 	relationshipJSON["partner"]["FF"] +
+													// 	relationshipJSON["partner"]["MM"];
+
+													// relationshipSingles = relationshipJSON["single"]["M"] +
+													// 	relationshipJSON["single"]["F"];
+
+													// relationshipTotal = relationshipPartners + relationshipSingles;
+
+													// relationshipStatusData = [relationshipSingles, relationshipPartners];
+
+													// genderStatusData = [
+													// 	relationshipJSON["single"]["M"],
+													// 	relationshipJSON["single"]["F"],
+													// 	relationshipPartners
+													// ];
+
+													// singleData = genderStatusData.slice(0, 2);
+													// partnerData = [
+													// 	relationshipJSON["partner"]["MF"],
+													// 	relationshipJSON["partner"]["FF"],
+													// 	relationshipJSON["partner"]["MM"]
+													// ];
+
+													// // Massage the data for pictogram, e.g.
+													// // 37,000 -> 3.7 -> [1, 1, 1, 0.7]
+													// // 20,000 -> 2.0 -> [1, 1]
+													// // 13,000 -> 1.3 -> [1, 0.3]
+													// var makePictoData = function (d, i, array) {
+													// 	var number = d / 10000,
+													// 		remainder,
+													// 		myArray = [];
+
+													// 	if (d <= 0) {
+													// 		myArray.push(0);
+													// 	}
+													// 	else {
+													// 		remainder = number - Math.floor(number);
+													// 		number = Math.floor(number);
+
+													// 		while (number) {
+													// 			myArray.push(1);
+													// 			--number;
+													// 		}
+
+													// 		if (remainder >  1e-6) myArray.push(remainder);
+													// 	}
+													// 	array[i] = myArray;
+													// };
+
+													// singleData.forEach(makePictoData);
+													// partnerData.forEach(makePictoData);
+
+													// // Generate ordinal colormap functions
+													// var relationshipPalette = ["#ba9bc9", "#9933cc"];
+													// var relationshipColors = d3.scaleOrdinal()
+													// 	.range(relationshipPalette);
+
+													// var genderPalette = ["#a9a9a9", "#777777", "#ffffff"];
+													// var genderColors = d3.scaleOrdinal()
+													// 	.range(genderPalette);
+
+													// // Generate donut graphs
+													// var relationshipArc = d3.arc()
+													// 	.outerRadius(RADIUS - 10)
+													// 	.innerRadius(RADIUS - 70);
+
+													// var relationshipPie = d3.pie()
+													// 	.sort(null)
+													// 	.value(function (d) { return d; });
+
+													// var relationshipSVG = d3.select("#chart-wrapper12").append("svg")
+													// 	.attr("class", "relationshipSVG")
+													// 	.attr("width", 300)
+													// 	.attr("height", HEIGHT);
+
+													// var relationshipPieChart = relationshipSVG.append("g")
+													// 	.attr("transform", "translate(" + (RADIUS + MARGIN) + "," + HEIGHT / 1.7 + ")")
+													// 	.selectAll("relationshipArc")
+													// 	.data(relationshipPie(relationshipStatusData));
+
+													// relationshipPieChart.enter()
+													// 	.append("g")
+													// 	.attr("class", "relationshipArc")
+													// 	.append("path")
+													// 	.style("fill", function (d, i) { return relationshipColors(i); })
+													// 	.style("stroke", "#ffffff")
+													// 	.style("stroke-width", 5)
+													// 	.attr("d", relationshipArc);
+
+													// var genderArc = d3.arc()
+													// 	.outerRadius(RADIUS - 5)
+													// 	.innerRadius(RADIUS - 20);
+
+													// var genderPie = d3.pie()
+													// 	.sort(null)
+													// 	.value(function (d) { return d; });
+
+													// var genderPieChart = relationshipPieChart.selectAll("genderArc")
+													// 	.data(genderPie(genderStatusData));
+
+													// genderPieChart.enter()
+													// 	.append("g")
+													// 	.attr("class", "genderArc")
+													// 	.append("path")
+													// 	.style("fill", function (d, i) { return genderColors(i); })
+													// 	.style("stroke", "#ffffff")
+													// 	.style("stroke-width", 5)
+													// 	.attr("d", genderArc);
+
+													// relationshipSVG.append("text")
+													// 	.attr("class", "peopleSVG")
+													// 	.attr("x", (RADIUS +  MARGIN))
+													// 	.attr("y", HEIGHT / 1.7)
+													// 	.attr("dy", "0.3em")
+													// 	.text(relationshipTotal / 1000 + "k");
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* https://bl.ocks.org/mbostock/e1192fe405703d8321a5187350910e08 */}}
+													<h3 class="card-title">Local Variables</h3>
+												</div>
+												<div class="card-body">
+													<div id="chart-wrapper13" style="height: auto"></div>
+												</div>
+											</div>
+											<script>
+												require(['d3'], function (d3) {
+													// var margin = {top: 8, right: 10, bottom: 2, left: 10},
+													// width = 712 - margin.left - margin.right,
+													// 	height = 69 - margin.top - margin.bottom;
+
+													// var parseDate = d3.timeParse("%b %Y");
+
+													// var x = d3.scaleTime()
+													// 	.range([0, width]);
+
+													// var y = d3.local();
+													// var area = d3.local();
+													// var line = d3.local();
+
+													// // first promise returns the dataset 
+													// var dataset = d3.tsv("/demo/stocks.csv").then(function (data) {
+													// 	return data;
+													// });
+													// dataset.then(function (ds) {
+													// 	return d3.nest()
+													// 		.key(function (d) {
+													// 			return d.symbol;
+													// 		})
+													// 		.entries(ds);
+													// }).then(function (symbols) {
+													// 	x.domain([
+													// 		d3.min(symbols, function (symbol) { return symbol.values[0].date; }),
+													// 		d3.max(symbols, function (symbol) { return symbol.values[symbol.values.length - 1].date; })
+													// 	]);
+													// 	var svg = d3.select("#chart-wrapper13").selectAll("svg")
+													// 		.data(symbols)
+													// 		.enter().append("svg")
+													// 		.attr("width", width + margin.left + margin.right)
+													// 		.attr("height", height + margin.top + margin.bottom)
+													// 		.append("g")
+													// 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+													// 		.each(function (d) {
+													// 			var ty = y.set(this, d3.scaleLinear()
+													// 				.domain([0, d3.max(d.values, function (d) { return d.price; })])
+													// 				.range([height, 0]));
+													// 			area.set(this, d3.area()
+													// 				.x(function (d) { return x(d.date); })
+													// 				.y0(height)
+													// 				.y1(function (d) { return ty(d.price); }));
+													// 			line.set(this, d3.line()
+													// 				.x(function (d) { return x(d.date); })
+													// 				.y(function (d) { return ty(d.price); }));
+													// 		});
+
+													// 	svg.append("path")
+													// 		.attr("class", "area")
+													// 		.attr("d", function (d) {
+													// 			console.log(d.key);
+													// 			console.log(d.values);
+													// 			return area.get(this)(d.values);
+													// 		});
+													// 	svg.append("path")
+													// 		.attr("class", "line")
+													// 		.attr("d", function (d) {
+													// 			return line.get(this)(d.values);
+													// 		});
+													// 	svg.append("text")
+													// 		.attr("x", width - 64)
+													// 		.attr("y", height - 16)
+													// 		.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
+													// 		.text(function (d) {
+													// 			return d.key;
+													// 		});
+													// });
+
+													// function type(d) {
+													// 	d.price = +d.price;
+													// 	d.date = parseDate(d.date);
+													// 	return d;
+													// }
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+								{{/* chart-start */}}
+								<div class="card">
+									<div class="card-body">
+										<div class="text-wrap p-lg-6">
+											<div class="card">
+												<div class="card-header">
+													{{/* http://bl.ocks.org/nitaku/833632f23c308ae2d58b */}}
+													<h3 class="card-title">Isometric treemap</h3>
+												</div>
+												<div class="card-body">
+													<div id="treemap1" style="height: 20rem"></div>
+												</div>
+											</div>
+											<style>
+												.iso.outline {
+													stroke: #333;
+													fill: none;
+													vector-effect: non-scaling-stroke;
+												}
+									
+												.label {
+													pointer-events: none;
+													text-anchor: middle;
+													font-family: Impact;
+												}
+									
+												.pipedon:hover .label {
+													fill: black;
+												}
+									
+												.pipedon:hover .face {
+													fill: yellow;
+												}
+									
+												.hidden {
+													display: none;
+												}
+											</style>
+											<script>
+												require(['d3'], function (d3) {
+													var DH, PAD, color, correct_x, correct_y, height, iso_layout, isometric, ordering, parallelepipedon, path_generator, svg, treemap, vis, width, zoom, zoomable_layer;
+													svg = d3.select("#treemap1").append("svg");
+													width = svg.node().getBoundingClientRect().width;
+													height = svg.node().getBoundingClientRect().height;
+													zoomable_layer = svg.append('g');
+													zoom = d3.zoom().scaleExtent([1, 100]).on('zoom', function () {
+														return zoomable_layer.attr({
+															transform: "translate(" + (zoom.translate()) + ")scale(" + (zoom.scale()) + ")"
+														});
+													});
+													svg.call(zoom);
+													vis = zoomable_layer.append('g').attr({
+														"class": 'vis',
+														transform: "translate(" + (width / 2) + "," + (height / 3 - 112) + ")"
+													});
+
+													isometric = function (_3d_p) {
+														return [-Math.sqrt(3) / 2 * _3d_p[0] + Math.sqrt(3) / 2 * _3d_p[1], +0.5 * _3d_p[0] + 0.5 * _3d_p[1] - _3d_p[2]];
+													};
+
+													parallelepipedon = function (d) {
+														var fb, ft, mlb, mlt, mrb, mrt, nb, nt;
+														if (!(d.x != null)) {
+															d.x = 0;
+														}
+														if (!(d.y != null)) {
+															d.y = 0;
+														}
+														if (!(d.h != null)) {
+															d.h = 0;
+														}
+														if (!(d.dx != null)) {
+															d.dx = 10;
+														}
+														if (!(d.dy != null)) {
+															d.dy = 10;
+														}
+														if (!(d.dh != null)) {
+															d.dh = 10;
+														}
+														fb = isometric([d.x, d.y, d.h], mlb = isometric([d.x + d.dx, d.y, d.h], nb = isometric([d.x + d.dx, d.y + d.dy, d.h], mrb = isometric([d.x, d.y + d.dy, d.h], ft = isometric([d.x, d.y, d.h + d.dh], mlt = isometric([d.x + d.dx, d.y, d.h + d.dh], nt = isometric([d.x + d.dx, d.y + d.dy, d.h + d.dh], mrt = isometric([d.x, d.y + d.dy, d.h + d.dh]))))))));
+														d.iso = {
+															face_bottom: [fb, mrb, nb, mlb],
+															face_left: [mlb, mlt, nt, nb],
+															face_right: [nt, mrt, mrb, nb],
+															face_top: [ft, mrt, nt, mlt],
+															outline: [ft, mrt, mrb, nb, mlb, mlt],
+															fb: fb,
+															mlb: mlb,
+															nb: nb,
+															mrb: mrb,
+															ft: ft,
+															mlt: mlt,
+															nt: nt,
+															mrt: mrt
+														};
+														return d;
+													};
+
+													ordering = function (a, b) {
+														return b.i - a.i;
+													};
+
+													iso_layout = function (data, shape, scale) {
+														if (!(scale != null)) {
+															scale = 1;
+														}
+														data.forEach(function (d) {
+															return shape(d, scale);
+														});
+														return data.sort(ordering);
+													};
+
+													path_generator = function (d) {
+														return 'M' + d.map(function (p) {
+															return p.join(' ');
+														}).join('L') + 'z';
+													};
+
+													DH = 5;
+													PAD = 4;
+
+													treemap = d3.treemap().size([400, 400]).padding(PAD).round(false);
+													// .value(function (d) {
+													// 	return d.size;
+													// })
+													// var root = d3.stratify()
+													// 	.id(function (d) { return d.name; })
+													// 	.parentId(function (d) { return d.parent; })
+													// 	(table);
+													// var nodes = treemap(root, sort(function (a, b) {
+													// 	return ordering(b, a);
+													// }));
+
+													color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+													correct_x = d3.scaleLinear().domain([0, width]).range([0, width * 1.05]);
+
+													correct_y = d3.scaleLinear().domain([0, height]).range([0, height * 3 / 4]);
+
+													d3.json('/demo/flare.json', function (tree) {
+														var data, enter_labels, enter_labels_g, enter_pipedons, i, pipedons, walk, walk_i;
+														walk = function (n, depth) {
+															var child, _i, _len, _ref;
+															n.depth = depth;
+															n.dh = DH;
+															n.h = DH * depth;
+															if (n.children != null) {
+																_ref = n.children;
+																for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+																	child = _ref[_i];
+																	walk(child, depth + 1);
+																}
+																n.children.sort(function (a, b) {
+																	return a.size - b.size;
+																});
+																return n.size = d3.sum(n.children, function (d) {
+																	return d.size;
+																});
+															}
+														};
+														walk(tree, 0);
+														i = 0;
+														walk_i = function (n) {
+															var child, _i, _len, _ref;
+															if (n.children != null) {
+																_ref = n.children;
+																for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+																	child = _ref[_i];
+																	walk_i(child);
+																}
+															}
+															n.i = i;
+															return i += 1;
+														};
+														walk_i(tree);
+														data = treemap.nodes(tree);
+														iso_layout(data, parallelepipedon);
+														data.forEach(function (d, i) {
+															return d.template_color = d3.hcl(color(d.i));
+														});
+														pipedons = vis.selectAll('.pipedon').data(data);
+														enter_pipedons = pipedons.enter().append('g').attr({
+															"class": 'pipedon'
+														});
+														enter_pipedons.append('path').attr({
+															"class": 'iso face bottom',
+															d: function (d) {
+																return path_generator(d.iso.face_bottom);
+															}
+														});
+														enter_pipedons.append('path').attr({
+															"class": 'iso face left',
+															d: function (d) {
+																return path_generator(d.iso.face_left);
+															},
+															fill: function (d) {
+																return d.template_color;
+															}
+														});
+														enter_pipedons.append('path').attr({
+															"class": 'iso face right',
+															d: function (d) {
+																return path_generator(d.iso.face_right);
+															},
+															fill: function (d) {
+																return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
+															}
+														});
+														enter_pipedons.append('path').attr({
+															"class": 'iso face top',
+															d: function (d) {
+																return path_generator(d.iso.face_top);
+															},
+															fill: function (d) {
+																return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l + 12);
+															}
+														});
+														enter_labels_g = enter_pipedons.append('g').classed('hidden', function (d) {
+															return d.children != null;
+														});
+														enter_labels = enter_labels_g.append('svg').attr({
+															"class": 'label'
+														});
+														enter_labels.append('text').text(function (d) {
+															return d.name.toUpperCase();
+														}).attr({
+															dy: '.35em'
+														}).each(function (node) {
+															var bbox, bbox_aspect, node_bbox, node_bbox_aspect, rotate;
+															bbox = this.getBBox();
+															bbox_aspect = bbox.width / bbox.height;
+															node_bbox = {
+																width: node.dx,
+																height: node.dy
+															};
+															node_bbox_aspect = node_bbox.width / node_bbox.height;
+															rotate = bbox_aspect >= 1 && node_bbox_aspect < 1 || bbox_aspect < 1 && node_bbox_aspect >= 1;
+															node.label_bbox = {
+																x: bbox.x + (bbox.width - correct_x(bbox.width)) / 2,
+																y: bbox.y + (bbox.height - correct_y(bbox.height)) / 2,
+																width: correct_x(bbox.width),
+																height: correct_y(bbox.height)
+															};
+															if (rotate) {
+																node.label_bbox = {
+																	x: node.label_bbox.y,
+																	y: node.label_bbox.x,
+																	width: node.label_bbox.height,
+																	height: node.label_bbox.width
+																};
+																return d3.select(this).attr('transform', 'rotate(90) translate(0,1)');
+															}
+														});
+														enter_labels.each(function (d) {
+															d.iso_x = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[0] - d.dx / 2;
+															return d.iso_y = isometric([d.x + d.dx / 2, d.y + d.dy / 2, d.h + d.dh])[1] - d.dy / 2;
+														});
+														enter_labels.attr({
+															x: function (d) {
+																return d.iso_x;
+															},
+															y: function (d) {
+																return d.iso_y;
+															},
+															width: function (node) {
+																return node.dx;
+															},
+															height: function (node) {
+																return node.dy;
+															},
+															viewBox: function (node) {
+																return "" + node.label_bbox.x + " " + node.label_bbox.y + " " + node.label_bbox.width + " " + node.label_bbox.height;
+															},
+															preserveAspectRatio: 'none',
+															fill: function (d) {
+																return d3.hcl(d.template_color.h, d.template_color.c, d.template_color.l - 12);
+															}
+														});
+														enter_labels_g.attr({
+															transform: function (d) {
+																return "translate(" + (d.iso_x + d.dx / 2) + "," + (d.iso_y + d.dy / 2) + ") scale(1, " + (1 / Math.sqrt(3)) + ") rotate(-45) translate(" + (-(d.iso_x + d.dx / 2)) + "," + (-(d.iso_y + d.dy / 2)) + ")";
+															}
+														});
+														enter_pipedons.append('path').attr({
+															"class": 'iso outline',
+															d: function (d) {
+																return path_generator(d.iso.outline);
+															}
+														});
+														return enter_pipedons.append('title').text(function (d) {
+															return d.name;
+														});
+													});
+												});
+											</script>
+										</div>
+									</div>
+								</div>
+								{{/* chart-end */}}
+							</div>
+						</div>
+						{{/* https://bl.ocks.org/pstuffa/1f06421d4def35778245b24e11b08ca2 */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+						{{/* url */}}
+{{ end }}
