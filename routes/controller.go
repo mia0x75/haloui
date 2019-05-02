@@ -64,11 +64,11 @@ func dashboard(c echo.Context) error {
         Recurrent
         UpdateAt
         CreateAt
-	  }
+      }
     }
   }
   me {
-	  ...UserInfo
+    ...UserInfo
   }
   environments {
     CPUStats {
@@ -263,8 +263,77 @@ fragment ClusterInfo on Cluster {
 }
 
 func users(c echo.Context) error {
+	req := graphql.NewRequest(`query index {
+  me {
+    ...UserInfo
+  }
+  users (first: 15){
+    edges {
+      node {
+        UUID
+        Name
+		Email
+		Status
+        Avatar {
+          URL
+        }
+        Phone
+        CreateAt
+      }
+    }
+  }
+}
+fragment UserInfo on User {
+  Name
+  UUID
+  Avatar {
+    URL
+  }
+}
+`)
+
+	// set any variables
+	// req.Var("email", "ces365@163.com")
+	// req.Var("password", "root")
+
+	sess, _ := session.Get("session", c)
+	token, _ := sess.Values["token"].(string)
+
+	// set header fields
+	req.Header.Set("Authentication", token)
+	req.Header.Set("Cache-Control", "no-cache")
+
+	var resp struct {
+		Me struct {
+			UUID   string
+			Name   string
+			Avatar struct {
+				URL string
+			}
+		}
+		Users struct {
+			Edges []struct {
+				Node struct {
+					UUID     string
+					Name     string
+					Email    string
+					Phone    uint64
+					CreateAt uint
+					Status   uint8
+					Avatar   struct {
+						URL string
+					}
+				}
+			}
+		}
+	}
+
+	if err := request(req, &resp); err != nil {
+		log.Println(err)
+	}
+
 	return c.Render(http.StatusOK, "users-list.html", map[string]interface{}{
-		"name": "Dolly!",
+		"data": resp,
 	})
 }
 
@@ -275,14 +344,144 @@ func tickets(c echo.Context) error {
 }
 
 func rules(c echo.Context) error {
+	req := graphql.NewRequest(`query index {
+  me {
+    ...UserInfo
+  }
+  rules {
+    UUID
+    Name
+    Group
+    Description
+    VldrGroup
+    Values
+    Bitwise
+    Func
+    Element
+    CreateAt
+    UpdateAt
+  }
+}
+fragment UserInfo on User {
+  Name
+  UUID
+  Avatar {
+    URL
+  }
+}
+`)
+
+	// set any variables
+	// req.Var("email", "ces365@163.com")
+	// req.Var("password", "root")
+
+	sess, _ := session.Get("session", c)
+	token, _ := sess.Values["token"].(string)
+
+	// set header fields
+	req.Header.Set("Authentication", token)
+	req.Header.Set("Cache-Control", "no-cache")
+
+	var resp struct {
+		Me struct {
+			UUID   string
+			Name   string
+			Avatar struct {
+				URL string
+			}
+		}
+		Rules []struct {
+			UUID        string
+			Name        string
+			Group       uint8
+			Description string
+			VldrGroup   uint16
+			Values      string
+			Bitwise     uint8
+			Func        string
+			Element     string
+			CreateAt    uint
+			UpdateAt    uint
+		}
+	}
+
+	if err := request(req, &resp); err != nil {
+		log.Println(err)
+	}
+
 	return c.Render(http.StatusOK, "rules-list.html", map[string]interface{}{
-		"name": "Dolly!",
+		"data": resp,
 	})
 }
 
 func clusters(c echo.Context) error {
+	req := graphql.NewRequest(`query index {
+  me {
+    ...UserInfo
+  }
+  clusters (first: 15){
+    edges {
+      node {
+        UUID
+        Alias
+        Host
+        IP
+        Port
+        Status
+        CreateAt
+      }
+    }
+  }
+}
+fragment UserInfo on User {
+  Name
+  UUID
+  Avatar {
+    URL
+  }
+}
+`)
+
+	// set any variables
+	// req.Var("email", "ces365@163.com")
+	// req.Var("password", "root")
+
+	sess, _ := session.Get("session", c)
+	token, _ := sess.Values["token"].(string)
+
+	// set header fields
+	req.Header.Set("Authentication", token)
+	req.Header.Set("Cache-Control", "no-cache")
+
+	var resp struct {
+		Me struct {
+			UUID   string
+			Name   string
+			Avatar struct {
+				URL string
+			}
+		}
+		Clusters struct {
+			Edges []struct {
+				Node struct {
+					UUID     string
+					Alias    string
+					Host     string
+					IP       string
+					CreateAt uint
+					Status   uint8
+					Port     uint16
+				}
+			}
+		}
+	}
+
+	if err := request(req, &resp); err != nil {
+		log.Println(err)
+	}
+
 	return c.Render(http.StatusOK, "clusters-list.html", map[string]interface{}{
-		"name": "Dolly!",
+		"data": resp,
 	})
 }
 
